@@ -92,7 +92,7 @@ Resources:
             StringEquals:
               'AWS:Referer': !Ref 'AWS::AccountId'
       Topics:
-      - !Sub '${AWS::StackName}-Topic'
+      - !Ref Topic
   FallbackTopic:
     Type: 'AWS::SNS::Topic'
     Properties:
