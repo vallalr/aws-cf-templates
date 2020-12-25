@@ -52,8 +52,7 @@ Conditions:
 Resources:
   Topic:
     Type: 'AWS::SNS::Topic'
-    Properties:
-      DisplayName: !Sub '${AWS::StackName}-Topic'
+    Properties: {}
   TopicPolicy:
     Type: 'AWS::SNS::TopicPolicy'
     Properties:
@@ -95,8 +94,7 @@ Resources:
       - !Ref Topic
   FallbackTopic:
     Type: 'AWS::SNS::Topic'
-    Properties:
-      DisplayName: !Sub '${AWS::StackName}-FallbackTopic'
+    Properties: {}
   NumberOfNotificationsFailedTooHighAlarm:
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
