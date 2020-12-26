@@ -210,7 +210,7 @@ Resources:
     UpdateReplacePolicy: Snapshot
     Type: 'AWS::RDS::DBCluster'
     Properties:
-      DBClusterIdentifier: '${AWS::StackName}'
+      DBClusterIdentifier: !Sub '${AWS::StackName}'
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DatabaseName: !If [HasDBSnapshotIdentifier, !Ref 'AWS::NoValue', !Ref DBName]
       DBClusterParameterGroupName: !Ref DBClusterParameterGroup
