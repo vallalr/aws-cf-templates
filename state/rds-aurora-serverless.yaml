@@ -194,7 +194,6 @@ Resources:
   DBClusterParameterGroup:
     Type: 'AWS::RDS::DBClusterParameterGroup'
     Properties:
-      DBClusterParameterGroupName: !Sub '${AWS::StackName}'
       Description: !Ref 'AWS::StackName'
       Family: !FindInMap [EngineVersionMap, !Ref EngineVersion, ClusterParameterGroupFamily]
       Parameters:
