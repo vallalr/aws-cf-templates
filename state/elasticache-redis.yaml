@@ -214,6 +214,7 @@ Resources:
   SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
+      GroupName : !Sub '${AWS::StackName}'
       GroupDescription: !Ref 'AWS::StackName'
       VpcId:
         'Fn::ImportValue': !Sub '${ParentVPCStack}-VPC'

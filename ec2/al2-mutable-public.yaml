@@ -549,10 +549,12 @@ Resources:
   Logs:
     Type: 'AWS::Logs::LogGroup'
     Properties:
+      LogGroupName: !Sub '${AWS::StackName}-LogGroup'
       RetentionInDays: !Ref LogsRetentionInDays
   SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
+      GroupName : !Sub '${AWS::StackName}'
       GroupDescription: !Ref Name
       VpcId: {'Fn::ImportValue': !Sub '${ParentVPCStack}-VPC'}
   SecurityGroupInSSHBastion:
@@ -606,11 +608,13 @@ Resources:
   InstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
+      InstanceProfileName: !Sub '${AWS::StackName}'
       Roles:
       - !Ref IAMRole
   IAMRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub '${AWS::StackName}'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -978,6 +982,7 @@ Resources:
   RecoveryAlarm:
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-RecoveryAlarm'
       AlarmDescription: 'Recovering instance when underlying hardware fails.'
       Namespace: 'AWS/EC2'
       MetricName: StatusCheckFailed_System
@@ -995,6 +1000,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-CPUTooHighAlarm'
       AlarmDescription: 'Average CPU utilization over last 10 minutes higher than 80%'
       Namespace: 'AWS/EC2'
       MetricName: CPUUtilization
@@ -1012,6 +1018,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-MemoryTooHighAlarm'
       AlarmDescription: 'Average memory utilization over last 10 minutes higher than 80%'
       Namespace: !Ref 'AWS::StackName'
       MetricName: mem_used_percent
@@ -1029,6 +1036,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-DiskTooHighAlarm'
       AlarmDescription: 'Average disk utilization over last 10 minutes higher than 80%'
       Namespace: !Ref 'AWS::StackName'
       MetricName: disk_used_percent
@@ -1113,6 +1121,7 @@ Resources:
     Condition: HasBackupRetentionPeriod
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub '${AWS::StackName}-BackupRole'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:

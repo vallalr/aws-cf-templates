@@ -412,6 +412,7 @@ Resources:
   LoadBalancerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
+      GroupName : !Sub '${AWS::StackName}-load-balancer'
       GroupDescription: 'wordpress-elb'
       VpcId: {'Fn::ImportValue': !Sub '${ParentVPCStack}-VPC'}
   LoadBalancerSecurityGroupInWorld:
@@ -509,6 +510,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-HTTPCodeELB5XXTooHighAlarm'
       AlarmDescription: 'Elastic load balancer returns 5XX HTTP status codes'
       Namespace: 'AWS/ELB'
       MetricName: HTTPCode_ELB_5XX
@@ -526,6 +528,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-HTTPCodeTarget5XXTooHighAlarm'
       AlarmDescription: 'Elastic load balancer receives 5XX HTTP status codes from backends'
       Namespace: 'AWS/ELB'
       MetricName: HTTPCode_Backend_5XX
@@ -610,6 +613,7 @@ Resources:
   DBSubnetGroup:
     Type: 'AWS::RDS::DBSubnetGroup'
     Properties:
+      DBSubnetGroupName: !Sub '${AWS::StackName}'
       DBSubnetGroupDescription: 'DB subnet group'
       SubnetIds:
       - {'Fn::ImportValue': !Sub '${ParentVPCStack}-SubnetAPrivate'}
@@ -1183,6 +1187,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-CPUTooHighAlarm'
       AlarmDescription: 'Average CPU utilization over last 10 minutes higher than 80%'
       Namespace: 'AWS/EC2'
       MetricName: CPUUtilization
