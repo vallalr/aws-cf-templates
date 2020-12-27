@@ -779,7 +779,7 @@ Resources:
       HealthyThresholdCount: 2
       UnhealthyThresholdCount: 2
       Matcher:
-        HttpCode: '200-299'
+        HttpCode: '200-499'
       Port: 8080 # overriden when containers are attached
       Protocol: HTTP
       TargetType: ip
