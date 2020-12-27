@@ -48,15 +48,21 @@ Metadata:
       - AppEnvironment2Value
       - AppEnvironment3Key
       - AppEnvironment3Value
-      - SidecarImage
-      - SidecarCommand
-      - SidecarPort
-      - SidecarEnvironment1Key
-      - SidecarEnvironment1Value
-      - SidecarEnvironment2Key
-      - SidecarEnvironment2Value
-      - SidecarEnvironment3Key
-      - SidecarEnvironment3Value
+      - DatadogImage
+      - DatadogCommand
+      - DatadogPort
+      - DatadogEnvironment1Key
+      - DatadogEnvironment1Value
+      - DatadogEnvironment2Key
+      - DatadogEnvironment2Value
+      - DatadogEnvironment3Key
+      - DatadogEnvironment3Value
+      - DatadogEnvironment4Key
+      - DatadogEnvironment4Value
+      - DatadogEnvironment5Key
+      - DatadogEnvironment5Value
+      - DatadogEnvironment6Key
+      - DatadogEnvironment6Value
     - Label:
         default: 'Service Parameters'
       Parameters:
@@ -161,7 +167,7 @@ Parameters:
     Type: String
     Default: ''
   ProxyPort:
-    Description: 'The port exposed by the proxy container that receives traffic from the load balancer (ProxyPort <> AppPort <> SidecarPort; ignored if ProxyImage is not set).'
+    Description: 'The port exposed by the proxy container that receives traffic from the load balancer (ProxyPort <> AppPort <> DatadogPort; ignored if ProxyImage is not set).'
     Type: Number
     Default: 8000
     MinValue: 1
@@ -199,7 +205,7 @@ Parameters:
     Type: String
     Default: ''
   AppPort:
-    Description: 'The port exposed by the app container that receives traffic from the load balancer or the proxy container (AppPort <> ProxyPort <> SidecarPort).'
+    Description: 'The port exposed by the app container that receives traffic from the load balancer or the proxy container (AppPort <> ProxyPort <> DatadogPort).'
     Type: Number
     Default: 15672
     MinValue: 1
@@ -228,42 +234,66 @@ Parameters:
     Description: 'Optional environment variable 3 value for app container.'
     Type: String
     Default: ''
-  SidecarImage:
-    Description: 'Optional Docker image to use for the sidecar container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
+  DatadogImage:
+    Description: 'Optional Docker image to use for the Datadog container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
     Default: ''
-  SidecarCommand:
-    Description: 'Optional command used when starting the sidecar container.'
+  DatadogCommand:
+    Description: 'Optional command used when starting the Datadog container.'
     Type: String
     Default: ''
-  SidecarPort:
-    Description: 'The port exposed by the sidecar container reachable from the app container on host localhost (SidecarPort <> ProxyPort <> AppPort).'
+  DatadogPort:
+    Description: 'The port exposed by the Datadog container reachable from the app container on host localhost (DatadogPort <> ProxyPort <> AppPort).'
     Type: Number
     Default: 9000
     MinValue: 1
     MaxValue: 49150
-  SidecarEnvironment1Key:
-    Description: 'Optional environment variable 1 key for sidecar container.'
+  DatadogEnvironment1Key:
+    Description: 'Optional environment variable 1 key for Datadog container.'
     Type: String
     Default: ''
-  SidecarEnvironment1Value:
-    Description: 'Optional environment variable 1 value for sidecar container.'
+  DatadogEnvironment1Value:
+    Description: 'Optional environment variable 1 value for Datadog container.'
     Type: String
     Default: ''
-  SidecarEnvironment2Key:
-    Description: 'Optional environment variable 2 key for sidecar container.'
+  DatadogEnvironment2Key:
+    Description: 'Optional environment variable 2 key for Datadog container.'
     Type: String
     Default: ''
-  SidecarEnvironment2Value:
-    Description: 'Optional environment variable 2 value for sidecar container.'
+  DatadogEnvironment2Value:
+    Description: 'Optional environment variable 2 value for Datadog container.'
     Type: String
     Default: ''
-  SidecarEnvironment3Key:
-    Description: 'Optional environment variable 3 key for sidecar container.'
+  DatadogEnvironment3Key:
+    Description: 'Optional environment variable 3 key for Datadog container.'
     Type: String
     Default: ''
-  SidecarEnvironment3Value:
-    Description: 'Optional environment variable 3 value for sidecar container.'
+  DatadogEnvironment3Value:
+    Description: 'Optional environment variable 3 value for Datadog container.'
+    Type: String
+    Default: ''
+  DatadogEnvironment4Key:
+    Description: 'Optional environment variable 4 key for Datadog container.'
+    Type: String
+    Default: ''
+  DatadogEnvironment4Value:
+    Description: 'Optional environment variable 4 value for Datadog container.'
+    Type: String
+    Default: ''
+  DatadogEnvironment5Key:
+    Description: 'Optional environment variable 5 key for Datadog container.'
+    Type: String
+    Default: ''
+  DatadogEnvironment5Value:
+    Description: 'Optional environment variable 5 value for Datadog container.'
+    Type: String
+    Default: ''
+  DatadogEnvironment6Key:
+    Description: 'Optional environment variable 6 key for Datadog container.'
+    Type: String
+    Default: ''
+  DatadogEnvironment6Value:
+    Description: 'Optional environment variable 6 value for Datadog container.'
     Type: String
     Default: ''
   SubDomainNameWithDot:
@@ -427,11 +457,14 @@ Conditions:
   HasProxyEnvironment1Key: !Not [!Equals [!Ref ProxyEnvironment1Key, '']]
   HasProxyEnvironment2Key: !Not [!Equals [!Ref ProxyEnvironment2Key, '']]
   HasProxyEnvironment3Key: !Not [!Equals [!Ref ProxyEnvironment3Key, '']]
-  HasSidecarImage: !Not [!Equals [!Ref SidecarImage, '']]
-  HasSidecarCommand: !Not [!Equals [!Ref SidecarCommand, '']]
-  HasSidecarEnvironment1Key: !Not [!Equals [!Ref SidecarEnvironment1Key, '']]
-  HasSidecarEnvironment2Key: !Not [!Equals [!Ref SidecarEnvironment2Key, '']]
-  HasSidecarEnvironment3Key: !Not [!Equals [!Ref SidecarEnvironment3Key, '']]
+  HasDatadogImage: !Not [!Equals [!Ref DatadogImage, '']]
+  HasDatadogCommand: !Not [!Equals [!Ref DatadogCommand, '']]
+  HasDatadogEnvironment1Key: !Not [!Equals [!Ref DatadogEnvironment1Key, '']]
+  HasDatadogEnvironment2Key: !Not [!Equals [!Ref DatadogEnvironment2Key, '']]
+  HasDatadogEnvironment3Key: !Not [!Equals [!Ref DatadogEnvironment3Key, '']]
+  HasDatadogEnvironment4Key: !Not [!Equals [!Ref DatadogEnvironment4Key, '']]
+  HasDatadogEnvironment5Key: !Not [!Equals [!Ref DatadogEnvironment5Key, '']]
+  HasDatadogEnvironment6Key: !Not [!Equals [!Ref DatadogEnvironment6Key, '']]
   HasWAF: !Not [!Equals [!Ref ParentWAFStack, '']]
 Resources:
   ServiceDiscovery:
@@ -775,13 +808,17 @@ Resources:
         - !If [HasAppEnvironment1Key, {Name: !Ref AppEnvironment1Key, Value: !Ref AppEnvironment1Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment2Key, {Name: !Ref AppEnvironment2Key, Value: !Ref AppEnvironment2Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment3Key, {Name: !Ref AppEnvironment3Key, Value: !Ref AppEnvironment3Value}, !Ref 'AWS::NoValue']
+        Ulimits:
+        - Name: 'nofile'
+          SoftLimit: 1024000
+          HardLimit: 1024000
       - !If
-        - HasSidecarImage
+        - HasDatadogImage
         - Name: datadog
-          Image: !Ref SidecarImage
-          Command: !If [HasSidecarCommand, !Ref SidecarCommand, !Ref 'AWS::NoValue']
+          Image: !Ref DatadogImage
+          Command: !If [HasDatadogCommand, !Ref DatadogCommand, !Ref 'AWS::NoValue']
           PortMappings:
-          - ContainerPort: !Ref SidecarPort
+          - ContainerPort: !Ref DatadogPort
             Protocol: tcp
           Essential: true
           LogConfiguration:
@@ -791,9 +828,12 @@ Resources:
               'awslogs-group': !Ref LogGroup
               'awslogs-stream-prefix': datadog
           Environment:
-          - !If [HasSidecarEnvironment1Key, {Name: !Ref SidecarEnvironment1Key, Value: !Ref SidecarEnvironment1Value}, !Ref 'AWS::NoValue']
-          - !If [HasSidecarEnvironment2Key, {Name: !Ref SidecarEnvironment2Key, Value: !Ref SidecarEnvironment2Value}, !Ref 'AWS::NoValue']
-          - !If [HasSidecarEnvironment3Key, {Name: !Ref SidecarEnvironment3Key, Value: !Ref SidecarEnvironment3Value}, !Ref 'AWS::NoValue']
+          - !If [HasDatadogEnvironment1Key, {Name: !Ref DatadogEnvironment1Key, Value: !Ref DatadogEnvironment1Value}, !Ref 'AWS::NoValue']
+          - !If [HasDatadogEnvironment2Key, {Name: !Ref DatadogEnvironment2Key, Value: !Ref DatadogEnvironment2Value}, !Ref 'AWS::NoValue']
+          - !If [HasDatadogEnvironment3Key, {Name: !Ref DatadogEnvironment3Key, Value: !Ref DatadogEnvironment3Value}, !Ref 'AWS::NoValue']
+          - !If [HasDatadogEnvironment4Key, {Name: !Ref DatadogEnvironment4Key, Value: !Ref DatadogEnvironment4Value}, !Ref 'AWS::NoValue']
+          - !If [HasDatadogEnvironment5Key, {Name: !Ref DatadogEnvironment5Key, Value: !Ref DatadogEnvironment5Value}, !Ref 'AWS::NoValue']
+          - !If [HasDatadogEnvironment6Key, {Name: !Ref DatadogEnvironment6Key, Value: !Ref DatadogEnvironment6Value}, !Ref 'AWS::NoValue']
         - !Ref 'AWS::NoValue'
       Cpu: !FindInMap [CpuMap, !Ref Cpu, Cpu]
       ExecutionRoleArn: !GetAtt 'TaskExecutionRole.Arn'
