@@ -613,9 +613,9 @@ Resources:
       - Name: !Ref Name
         Image: !Ref AppImage
         Command: !If [HasAppCommand, !Split [',', !Ref AppCommand], !Ref 'AWS::NoValue']
-        # PortMappings:
-        # - ContainerPort: !Ref AppPort
-        #   Protocol: tcp
+        PortMappings:
+        - ContainerPort: !Ref AppPort
+          Protocol: tcp
         Essential: true
         dockerLabels:
           com.datadoghq.ad.instances: '[{"host": "%%host%%"}]'
