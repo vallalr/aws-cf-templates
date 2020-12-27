@@ -832,6 +832,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::Events::Rule'
     Properties:
+      Name: !Sub '${AWS::StackName}-ServiceFailedNotification'
       EventPattern:
         source:
         - 'aws.ec2'
