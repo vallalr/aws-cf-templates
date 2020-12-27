@@ -96,6 +96,14 @@ Parameters:
     Description: 'Optional stack name of parent Client Security Group stack based on state/client-sg.yaml template to allow network access from the service to whatever uses the client security group.'
     Type: String
     Default: ''
+  ParentWAFStack:
+    Description: 'Optional stack name of parent WAF stack based on the security/waf.yaml template.'
+    Type: String
+    Default: ''
+  PermissionsBoundary:
+    Description: 'Optional ARN for a policy that will be used as the permission boundary for all roles created by this template.'
+    Type: String
+    Default: ''
   LoadBalancerScheme:
     Description: 'Indicates whether the load balancer in front of the ECS service is internet-facing or internal.'
     Type: String
