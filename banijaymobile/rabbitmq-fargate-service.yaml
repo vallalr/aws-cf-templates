@@ -245,7 +245,7 @@ Parameters:
   DatadogPort:
     Description: 'The port exposed by the Datadog container reachable from the app container on host localhost (DatadogPort <> ProxyPort <> AppPort).'
     Type: Number
-    Default: 9000
+    Default: ''
     MinValue: 1
     MaxValue: 49150
   DatadogEnvironment1Key:
@@ -1050,11 +1050,11 @@ Resources:
       - !Ref ScaleDownPolicy
 Outputs:
   TemplateID:
-    Description: 'adappt.co.uk template id.'
+    Description: 'cloudonaut.io template id.'
     Value: 'fargate/service-dedicated-alb'
   TemplateVersion:
-    Description: 'adappt.co.uk template version.'
-    Value: '11.0.1'
+    Description: 'cloudonaut.io template version.'
+    Value: '__VERSION__'
   StackName:
     Description: 'Stack name.'
     Value: !Sub '${AWS::StackName}'
