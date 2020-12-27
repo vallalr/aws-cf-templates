@@ -542,7 +542,7 @@ Resources:
         RoutingPolicy: MULTIVALUE
       HealthCheckCustomConfig:
         FailureThreshold: 1
-      Name: !Sub '${AWS::StackName}'
+      Name: !Ref Name
       NamespaceId: {'Fn::ImportValue': !Sub '${ParentCloudMapStack}-NamespaceID'}
   TaskExecutionRole:
     Type: 'AWS::IAM::Role'
@@ -610,9 +610,9 @@ Resources:
       - Name: !Ref Name
         Image: !Ref AppImage
         Command: !If [HasAppCommand, !Split [',', !Ref AppCommand], !Ref 'AWS::NoValue']
-        PortMappings:
-        - ContainerPort: !Ref AppPort
-          Protocol: tcp
+        # PortMappings:
+        # - ContainerPort: !Ref AppPort
+        #   Protocol: tcp
         Essential: true
         dockerLabels:
           com.datadoghq.ad.instances: '[{"host": "%%host%%"}]'
@@ -649,9 +649,9 @@ Resources:
         - Name: datadog
           Image: !Ref DatadogImage
           Command: !If [HasDatadogCommand, !Ref DatadogCommand, !Ref 'AWS::NoValue']
-          PortMappings:
-          - ContainerPort: !Ref DatadogPort
-            Protocol: tcp
+          # PortMappings:
+          # - ContainerPort: !Ref DatadogPort
+          #   Protocol: tcp
           Essential: true
           LogConfiguration:
             LogDriver: awslogs
