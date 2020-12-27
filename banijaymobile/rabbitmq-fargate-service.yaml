@@ -245,7 +245,7 @@ Parameters:
   DatadogPort:
     Description: 'The port exposed by the Datadog container reachable from the app container on host localhost (DatadogPort <> ProxyPort <> AppPort).'
     Type: Number
-    Default: ''
+    Default: '9000'
     MinValue: 1
     MaxValue: 49150
   DatadogEnvironment1Key:
