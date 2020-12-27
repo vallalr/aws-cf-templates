@@ -821,9 +821,9 @@ Resources:
         - Name: datadog
           Image: !Ref DatadogImage
           Command: !If [HasDatadogCommand, !Ref DatadogCommand, !Ref 'AWS::NoValue']
-          PortMappings:
-          - ContainerPort: !Ref DatadogPort
-            Protocol: tcp
+          # PortMappings:
+          # - ContainerPort: !Ref DatadogPort
+          #   Protocol: tcp
           Essential: true
           LogConfiguration:
             LogDriver: awslogs
