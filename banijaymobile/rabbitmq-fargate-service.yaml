@@ -1,5 +1,6 @@
+---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Fargate: service that runs on a Fargate cluster based on fargate/cluster.yaml and uses a dedicated ALB, a adappt.co.uk template'
+Description: 'Fargate: service that runs on a Fargate cluster based on fargate/cluster.yaml and uses a dedicated ALB, a cloudonaut.io template'
 Metadata:
   'AWS::CloudFormation::Interface':
     ParameterGroups:
