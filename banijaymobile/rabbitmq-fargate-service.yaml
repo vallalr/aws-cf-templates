@@ -1068,8 +1068,3 @@ Outputs:
     Value: !Sub 'http://${LoadBalancer.DNSName}'
     Export:
       Name: !Sub '${AWS::StackName}-URL'
-  SecurityGroup:
-    Description: 'Use this Security Group to reference incoming traffic from the host/instance.'
-    Value: !Ref SecurityGroup
-    Export:
-      Name: !Sub '${AWS::StackName}-SecurityGroup'
