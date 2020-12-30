@@ -345,6 +345,7 @@ Resources:
   LoadBalancerTargetGroup: # not monitored, but LoadBalancer is monitored!
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
     Properties:
+      Name: !Sub '${AWS::StackName}'
       HealthCheckIntervalSeconds: 15
       HealthCheckPath: '/ping'
       HealthCheckPort: '4180'
