@@ -582,6 +582,7 @@ Resources:
   LoadBalancer:
     Type: 'AWS::ElasticLoadBalancing::LoadBalancer'
     Properties:
+      Name: !Sub '${AWS::StackName}'
       AccessLoggingPolicy: !If [HasS3Bucket, {EmitInterval: 5, Enabled: true, S3BucketName: {'Fn::ImportValue': !Sub '${ParentS3StackAccessLog}-BucketName'}, S3BucketPrefix: !Ref 'AWS::StackName'}, !Ref 'AWS::NoValue']
       ConnectionDrainingPolicy:
         Enabled: true
@@ -644,6 +645,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-DatabaseBurstBalanceTooLowAlarm'
       AlarmDescription: 'Average database storage burst balance over last 10 minutes lower than 20%, expect a significant performance drop soon'
       Namespace: 'AWS/RDS'
       MetricName: BurstBalance
@@ -661,6 +663,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-DatabaseCPUUtilizationTooHighAlarm'
       AlarmDescription: 'Average database CPU utilization over last 10 minutes higher than 80%'
       Namespace: 'AWS/RDS'
       MetricName: CPUUtilization
@@ -678,6 +681,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-DatabaseDiskQueueDepthTooHighAlarm'
       AlarmDescription: 'Average database disk queue depth over last 10 minutes higher than 64, performance may suffer'
       Namespace: 'AWS/RDS'
       MetricName: DiskQueueDepth
@@ -695,6 +699,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-DatabaseFreeableMemoryTooLowAlarm'
       AlarmDescription: 'Average database freeable memory over last 10 minutes lower than 64 MB, performance may suffer'
       Namespace: 'AWS/RDS'
       MetricName: FreeableMemory
@@ -712,6 +717,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-DatabaseFreeStorageSpaceTooLowAlarm'
       AlarmDescription: 'Average database free storage space over last 10 minutes lower than 2 GB'
       Namespace: 'AWS/RDS'
       MetricName: FreeStorageSpace
@@ -729,6 +735,7 @@ Resources:
     Condition: HasAlertTopic
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-DatabaseSwapUsageTooHighAlarm'
       AlarmDescription: 'Average database swap usage over last 10 minutes higher than 256 MB, performance may suffer'
       Namespace: 'AWS/RDS'
       MetricName: SwapUsage
@@ -745,11 +752,13 @@ Resources:
   WebServerInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
+      InstanceProfileName: !Sub '${AWS::StackName}-WebServerInstanceProfile'
       Roles:
       - !Ref WebServerIAMRole
   WebServerIAMRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub '${AWS::StackName}-WebServerIAMRole'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -788,6 +797,7 @@ Resources:
     Type: 'AWS::IAM::Policy'
     Condition: HasIAMUserSSHAccess
     Properties:
+      PolicyName: !Sub '${AWS::StackName}-WebServerIAMPolicySSHAccess'
       Roles:
       - !Ref WebServerIAMRole
       PolicyName: iam
@@ -1215,6 +1225,7 @@ Resources:
   CPUHighAlarm:
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-CPUHighAlarm'
       EvaluationPeriods: 1
       Statistic: Average
       Threshold: 60
@@ -1239,6 +1250,7 @@ Resources:
   CPULowAlarm:
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-CPULowAlarm'
       EvaluationPeriods: 3
       Statistic: Average
       Threshold: 30
@@ -1264,6 +1276,7 @@ Resources:
     Condition: HasAlertTopicAndNotEFSProvisionedThroughput
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-EFSFileSystemBurstCreditBalanceTooLowAlarm'
       AlarmDescription: 'Average burst credit balance over last 10 minutes too low, expect a significant performance drop soon.'
       Namespace: 'AWS/EFS'
       MetricName: BurstCreditBalance
@@ -1281,6 +1294,7 @@ Resources:
     Condition: HasAlertTopicAndNotEFSProvisionedThroughput
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-EFSFileSystemPercentIOLimitTooHighAlarm'
       AlarmDescription: 'I/O limit has been reached, consider using Max I/O performance mode.'
       Namespace: 'AWS/EFS'
       MetricName: PercentIOLimit
@@ -1298,6 +1312,7 @@ Resources:
     Condition: HasAlertTopicAndEFSProvisionedThroughput
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
+      AlarmName: !Sub '${AWS::StackName}-EFSFileSystemThroughputAlarm'
       AlarmDescription: 'Reached 90% of the provisioned throughput over last 10 minutes.'
       Namespace: 'AWS/EFS'
       MetricName: TotalIOBytes
@@ -1328,6 +1343,7 @@ Resources:
   EFSSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
+      GroupName : !Sub '${AWS::StackName}-EFSSecurityGroup'
       GroupDescription: Allowing access to EFS
       VpcId: {'Fn::ImportValue': !Sub '${ParentVPCStack}-VPC'}
       SecurityGroupIngress:
@@ -1339,6 +1355,7 @@ Resources:
     Condition: HasEFSProvisionedThroughput
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub '${AWS::StackName}-LambdaRole'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -1530,6 +1547,7 @@ Resources:
     Condition: HasEFSBackupRetentionPeriod
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub '${AWS::StackName}-BackupRole'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:

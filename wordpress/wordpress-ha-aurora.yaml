@@ -609,6 +609,7 @@ Resources:
   DatabaseA:
     Type: 'AWS::RDS::DBInstance'
     Properties:
+      DBInstanceIdentifier: !Sub '${AWS::StackName}-DatabaseA'
       DBClusterIdentifier: !Ref DatabaseCluster
       DBInstanceClass: !Ref DBServerInstanceType
       Engine: aurora
@@ -616,6 +617,7 @@ Resources:
   DatabaseB:
     Type: 'AWS::RDS::DBInstance'
     Properties:
+      DBInstanceIdentifier: !Sub '${AWS::StackName}-DatabaseB'
       DBClusterIdentifier: !Ref DatabaseCluster
       DBInstanceClass: !Ref DBServerInstanceType
       Engine: aurora
@@ -623,6 +625,7 @@ Resources:
   WebServerInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
+      InstanceProfileName: !Sub '${AWS::StackName}-WebServerInstanceProfile'
       Roles:
       - !Ref WebServerIAMRole
   WebServerIAMRole:
@@ -667,6 +670,7 @@ Resources:
     Type: 'AWS::IAM::Policy'
     Condition: HasIAMUserSSHAccess
     Properties:
+      PolicyName: !Sub '${AWS::StackName}-WebServerIAMPolicySSHAccess'
       Roles:
       - !Ref WebServerIAMRole
       PolicyName: iam
