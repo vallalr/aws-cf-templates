@@ -1034,6 +1034,7 @@ Resources:
     - EFSMountTargetB
     - EFSMountTargetC
     Properties:
+      AutoScalingGroupName: !Sub '${AWS::StackName}-AutoScalingGroup'
       TargetGroupARNs:
       - !Ref LoadBalancerTargetGroup
       LaunchTemplate:
