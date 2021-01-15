@@ -69,7 +69,8 @@ Resources:
   TrailBucket:
     Condition: InternalBucket
     Type: 'AWS::S3::Bucket'
-    Properties: {}
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-trailbucket'
   TrailBucketPolicy:
     Condition: InternalBucket
     Type: 'AWS::S3::BucketPolicy'
