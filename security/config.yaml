@@ -70,7 +70,7 @@ Resources:
     Condition: InternalBucket
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub '${AWS::StackName}-bucket'
+      BucketName: !Sub '${AWS::StackName}-configbucket'
   ConfigBucketPolicy:
     Condition: InternalBucket
     Type: 'AWS::S3::BucketPolicy'
