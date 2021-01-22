@@ -48,6 +48,30 @@ Metadata:
       - AppEnvironment2Value
       - AppEnvironment3Key
       - AppEnvironment3Value
+      - AppEnvironment4Key
+      - AppEnvironment4Value
+      - AppEnvironment5Key
+      - AppEnvironment5Value
+      - AppEnvironment6Key
+      - AppEnvironment6Value
+      - AppEnvironment7Key
+      - AppEnvironment7Value
+      - AppEnvironment8Key
+      - AppEnvironment8Value
+      - AppEnvironment9Key
+      - AppEnvironment9Value
+      - AppEnvironment10Key
+      - AppEnvironment10Value
+      - AppEnvironment11Key
+      - AppEnvironment11Value
+      - AppEnvironment12Key
+      - AppEnvironment12Value
+      - AppEnvironment13Key
+      - AppEnvironment13Value
+      - AppEnvironment14Key
+      - AppEnvironment14Value
+      - AppEnvironment15Key
+      - AppEnvironment15Value
       - DatadogImage
       - DatadogCommand
       - DatadogPort
