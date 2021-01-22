@@ -199,7 +199,7 @@ Parameters:
   AppImage:
     Description: 'The Docker image to use for the app container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
-    Default: 'rabbitmq:management'
+    Default: 'locust-master'
   AppCommand:
     Description: 'Optional commands (comma-delimited) used when starting the app container.'
     Type: String
@@ -232,6 +232,102 @@ Parameters:
     Default: ''
   AppEnvironment3Value:
     Description: 'Optional environment variable 3 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment4Key:
+    Description: 'Optional environment variable 4 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment4Value:
+    Description: 'Optional environment variable 4 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment5Key:
+    Description: 'Optional environment variable 5 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment5Value:
+    Description: 'Optional environment variable 5 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment6Key:
+    Description: 'Optional environment variable 6 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment6Value:
+    Description: 'Optional environment variable 6 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment7Key:
+    Description: 'Optional environment variable 7 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment7Value:
+    Description: 'Optional environment variable 7 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment8Key:
+    Description: 'Optional environment variable 8 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment8Value:
+    Description: 'Optional environment variable 8 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment9Key:
+    Description: 'Optional environment variable 8 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment9Value:
+    Description: 'Optional environment variable 8 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment10Key:
+    Description: 'Optional environment variable 10 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment10Value:
+    Description: 'Optional environment variable 10 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment11Key:
+    Description: 'Optional environment variable 11 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment11Value:
+    Description: 'Optional environment variable 11 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment12Key:
+    Description: 'Optional environment variable 12 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment12Value:
+    Description: 'Optional environment variable 12 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment13Key:
+    Description: 'Optional environment variable 13 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment13Value:
+    Description: 'Optional environment variable 13 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment14Key:
+    Description: 'Optional environment variable 14 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment14Value:
+    Description: 'Optional environment variable 14 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment15Key:
+    Description: 'Optional environment variable 15 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment15Value:
+    Description: 'Optional environment variable 15 value for app container.'
     Type: String
     Default: ''
   DatadogImage:
@@ -452,6 +548,18 @@ Conditions:
   HasAppEnvironment1Key: !Not [!Equals [!Ref AppEnvironment1Key, '']]
   HasAppEnvironment2Key: !Not [!Equals [!Ref AppEnvironment2Key, '']]
   HasAppEnvironment3Key: !Not [!Equals [!Ref AppEnvironment3Key, '']]
+  HasAppEnvironment4Key: !Not [!Equals [!Ref AppEnvironment4Key, '']]
+  HasAppEnvironment5Key: !Not [!Equals [!Ref AppEnvironment5Key, '']]
+  HasAppEnvironment6Key: !Not [!Equals [!Ref AppEnvironment6Key, '']]
+  HasAppEnvironment7Key: !Not [!Equals [!Ref AppEnvironment7Key, '']]
+  HasAppEnvironment8Key: !Not [!Equals [!Ref AppEnvironment8Key, '']]
+  HasAppEnvironment9Key: !Not [!Equals [!Ref AppEnvironment9Key, '']]
+  HasAppEnvironment10Key: !Not [!Equals [!Ref AppEnvironment10Key, '']]
+  HasAppEnvironment11Key: !Not [!Equals [!Ref AppEnvironment11Key, '']]
+  HasAppEnvironment12Key: !Not [!Equals [!Ref AppEnvironment12Key, '']]
+  HasAppEnvironment13Key: !Not [!Equals [!Ref AppEnvironment13Key, '']]
+  HasAppEnvironment14Key: !Not [!Equals [!Ref AppEnvironment14Key, '']]
+  HasAppEnvironment15Key: !Not [!Equals [!Ref AppEnvironment15Key, '']]
   HasProxyImage: !Not [!Equals [!Ref ProxyImage, '']]
   HasProxyCommand: !Not [!Equals [!Ref ProxyCommand, '']]
   HasProxyEnvironment1Key: !Not [!Equals [!Ref ProxyEnvironment1Key, '']]
@@ -798,7 +906,7 @@ Resources:
         Essential: true
         dockerLabels:
           com.datadoghq.ad.instances: '[{"host": "%%host%%", "port": 5672}]'
-          com.datadoghq.ad.check_names: '["!Ref Name"]'
+          com.datadoghq.ad.check_names: '["locust-master"]'
           com.datadoghq.ad.init_configs: "[{}]"
         LogConfiguration:
           LogDriver: awslogs
@@ -810,6 +918,18 @@ Resources:
         - !If [HasAppEnvironment1Key, {Name: !Ref AppEnvironment1Key, Value: !Ref AppEnvironment1Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment2Key, {Name: !Ref AppEnvironment2Key, Value: !Ref AppEnvironment2Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment3Key, {Name: !Ref AppEnvironment3Key, Value: !Ref AppEnvironment3Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment4Key, {Name: !Ref AppEnvironment4Key, Value: !Ref AppEnvironment4Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment5Key, {Name: !Ref AppEnvironment5Key, Value: !Ref AppEnvironment5Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment6Key, {Name: !Ref AppEnvironment6Key, Value: !Ref AppEnvironment6Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment7Key, {Name: !Ref AppEnvironment7Key, Value: !Ref AppEnvironment7Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment8Key, {Name: !Ref AppEnvironment8Key, Value: !Ref AppEnvironment8Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment9Key, {Name: !Ref AppEnvironment9Key, Value: !Ref AppEnvironment9Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment10Key, {Name: !Ref AppEnvironment10Key, Value: !Ref AppEnvironment10Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment11Key, {Name: !Ref AppEnvironment11Key, Value: !Ref AppEnvironment11Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment12Key, {Name: !Ref AppEnvironment12Key, Value: !Ref AppEnvironment12Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment13Key, {Name: !Ref AppEnvironment13Key, Value: !Ref AppEnvironment13Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment14Key, {Name: !Ref AppEnvironment14Key, Value: !Ref AppEnvironment14Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment15Key, {Name: !Ref AppEnvironment15Key, Value: !Ref AppEnvironment15Value}, !Ref 'AWS::NoValue']
         Ulimits:
         - Name: 'nofile'
           SoftLimit: 1024000

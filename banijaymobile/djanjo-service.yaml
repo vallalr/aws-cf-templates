@@ -214,7 +214,7 @@ Parameters:
   AppImage:
     Description: 'The Docker image to use for the app container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
-    Default: 'tellybug'
+    Default: 'django'
   AppCommand:
     Description: 'Optional commands (comma-delimited) used when starting the app container.'
     Type: String
@@ -408,7 +408,7 @@ Parameters:
     Type: String
     Default: ''
   SubDomainNameWithDot:
-    Description: 'Name that is used to create the DNS entry with trailing dot, e.g. ?{SubDomainNameWithDot}?{HostedZoneName}. Leave blank for naked (or apex and bare) domain. Requires ParentZoneStack parameter!'
+    Description: 'Name that is used to create the DNS entry with trailing dot, e.g. §{SubDomainNameWithDot}§{HostedZoneName}. Leave blank for naked (or apex and bare) domain. Requires ParentZoneStack parameter!'
     Type: String
     Default: ''
   Cpu:
@@ -909,7 +909,7 @@ Resources:
         Essential: true
         dockerLabels:
           com.datadoghq.ad.instances: '[{"host": "%%host%%", "port": 8000}]'
-          com.datadoghq.ad.check_names: '["!Ref Name"]'
+          com.datadoghq.ad.check_names: '["django"]'
           com.datadoghq.ad.init_configs: "[{}]"
         LogConfiguration:
           LogDriver: awslogs
@@ -996,7 +996,7 @@ Resources:
       HealthCheckGracePeriodSeconds: !Ref HealthCheckGracePeriod
       LaunchType: FARGATE
       LoadBalancers:
-      - ContainerName: !If [HasProxyImage, nginx, tellybug]
+      - ContainerName: !If [HasProxyImage, nginx, django]
         ContainerPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
         TargetGroupArn: !Ref TargetGroup
       NetworkConfiguration:
