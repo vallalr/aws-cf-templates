@@ -175,7 +175,7 @@ Parameters:
   AppImage:
     Description: 'The Docker image to use for the app container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
-    Default: 'celery'
+    Default: 'worker'
   AppCommand:
     Description: 'Optional commands (comma-delimited) used when starting the app container.'
     Type: String
@@ -498,7 +498,7 @@ Conditions:
   HasAutoScaling: !Equals [!Ref AutoScaling, 'true']
   HasClientSecurityGroup1: !Not [!Equals [!Ref ParentClientStack1, '']]
   HasClientSecurityGroup2: !Not [!Equals [!Ref ParentClientStack2, '']]
-  HasClientSecurityGroup3: !Not [!Equals [!Ref ParentClientStack3, '']]  
+  HasClientSecurityGroup3: !Not [!Equals [!Ref ParentClientStack3, '']]
   HasSSHBastionSecurityGroup: !Not [!Equals [!Ref ParentSSHBastionStack, '']]
   HasTaskPolicies: !Not [!Equals [!Ref TaskPolicies, '']]
   HasAppCommand: !Not [!Equals [!Ref AppCommand, '']]

@@ -900,7 +900,7 @@ Resources:
             SoftLimit: 1024000
             HardLimit: 1024000
         - !Ref 'AWS::NoValue'
-      - Name: tellybug
+      - Name: !Ref Name
         Image: !Ref AppImage
         Command: !If [HasAppCommand, !Split [',', !Ref AppCommand], !Ref 'AWS::NoValue']
         PortMappings:
@@ -909,14 +909,14 @@ Resources:
         Essential: true
         dockerLabels:
           com.datadoghq.ad.instances: '[{"host": "%%host%%", "port": 8000}]'
-          com.datadoghq.ad.check_names: '["tellybug"]'
+          com.datadoghq.ad.check_names: '["!Ref Name"]'
           com.datadoghq.ad.init_configs: "[{}]"
         LogConfiguration:
           LogDriver: awslogs
           Options:
             'awslogs-region': !Ref 'AWS::Region'
             'awslogs-group': !Ref LogGroup
-            'awslogs-stream-prefix': tellybug
+            'awslogs-stream-prefix': !Ref Name
         Environment:
         - !If [HasAppEnvironment1Key, {Name: !Ref AppEnvironment1Key, Value: !Ref AppEnvironment1Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment2Key, {Name: !Ref AppEnvironment2Key, Value: !Ref AppEnvironment2Value}, !Ref 'AWS::NoValue']

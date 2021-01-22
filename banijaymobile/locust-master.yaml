@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Fargate: service that runs on a Fargate cluster based on fargate/cluster.yaml with service discovery via Cloud Map, a cloudonaut.io template'
+Description: 'Fargate: service that runs on a Fargate cluster based on fargate/cluster.yaml and uses a dedicated ALB, a cloudonaut.io template'
 Metadata:
   'AWS::CloudFormation::Interface':
     ParameterGroups:
@@ -9,13 +9,23 @@ Metadata:
       Parameters:
       - ParentVPCStack
       - ParentClusterStack
+      - ParentAuthProxyStack
       - ParentAlertStack
+      - ParentZoneStack
+      - ParentS3StackAccessLog
       - ParentCloudMapStack
       - ParentClientStack
       - ParentClientStack1
       - ParentClientStack2
       - ParentClientStack3
-      - ParentSSHBastionStack
+      - ParentWAFStack
+    - Label:
+        default: 'Load Balancer Parameters'
+      Parameters:
+      - LoadBalancerScheme
+      - LoadBalancerCertificateArn
+      - LoadBalancerIdleTimeout
+      - LoadBalancerDeregistrationDelay
     - Label:
         default: 'Task Parameters'
       Parameters:
@@ -38,30 +48,6 @@ Metadata:
       - AppEnvironment2Value
       - AppEnvironment3Key
       - AppEnvironment3Value
-      - AppEnvironment4Key
-      - AppEnvironment4Value
-      - AppEnvironment5Key
-      - AppEnvironment5Value
-      - AppEnvironment6Key
-      - AppEnvironment6Value
-      - AppEnvironment7Key
-      - AppEnvironment7Value
-      - AppEnvironment8Key
-      - AppEnvironment8Value
-      - AppEnvironment9Key
-      - AppEnvironment9Value
-      - AppEnvironment10Key
-      - AppEnvironment10Value
-      - AppEnvironment11Key
-      - AppEnvironment11Value
-      - AppEnvironment12Key
-      - AppEnvironment12Value
-      - AppEnvironment13Key
-      - AppEnvironment13Value
-      - AppEnvironment14Key
-      - AppEnvironment14Value
-      - AppEnvironment15Key
-      - AppEnvironment15Value
       - DatadogImage
       - DatadogCommand
       - DatadogPort
@@ -80,6 +66,7 @@ Metadata:
     - Label:
         default: 'Service Parameters'
       Parameters:
+      - SubDomainNameWithDot
       - Name
       - Cpu
       - Memory
@@ -88,6 +75,7 @@ Metadata:
       - DesiredCount
       - MaxCapacity
       - MinCapacity
+      - HealthCheckGracePeriod
       - LogsRetentionInDays
     - Label:
         default: 'Permission Parameters'
@@ -100,8 +88,20 @@ Parameters:
   ParentClusterStack:
     Description: 'Stack name of parent Cluster stack based on fargate/cluster.yaml template.'
     Type: String
+  ParentAuthProxyStack:
+    Description: 'Optional stack name of parent auth proxy stack based on security/auth-proxy-*.yaml template.'
+    Type: String
+    Default: ''
   ParentAlertStack:
     Description: 'Optional but recommended stack name of parent alert stack based on operations/alert.yaml template.'
+    Type: String
+    Default: ''
+  ParentZoneStack:
+    Description: 'Optional stack name of parent zone stack based on vpc/zone-*.yaml template.'
+    Type: String
+    Default: ''
+  ParentS3StackAccessLog:
+    Description: 'Optional stack name of parent s3 stack based on state/s3.yaml template (with Access set to ElbAccessLogWrite) to store access logs.'
     Type: String
     Default: ''
   ParentCloudMapStack:
@@ -122,14 +122,38 @@ Parameters:
     Description: 'Optional stack name of parent Client Security Group stack based on state/client-sg.yaml template to allow network access from the service to whatever uses the client security group.'
     Type: String
     Default: ''
-  ParentSSHBastionStack:
-    Description: 'Optional but recommended stack name of parent SSH bastion host/instance stack based on vpc/vpc-*-bastion.yaml template.'
+  ParentWAFStack:
+    Description: 'Optional stack name of parent WAF stack based on the security/waf.yaml template.'
     Type: String
     Default: ''
   PermissionsBoundary:
     Description: 'Optional ARN for a policy that will be used as the permission boundary for all roles created by this template.'
     Type: String
     Default: ''
+  LoadBalancerScheme:
+    Description: 'Indicates whether the load balancer in front of the ECS service is internet-facing or internal.'
+    Type: String
+    Default: 'internet-facing'
+    AllowedValues:
+    - 'internet-facing'
+    - internal
+  LoadBalancerCertificateArn:
+    Description: 'Optional Amazon Resource Name (ARN) of the certificate to associate with the load balancer. If set, HTTP requests are redirected to HTTPS.'
+    Type: String
+    Default: ''
+  LoadBalancerIdleTimeout:
+    Description: 'The idle timeout value, in seconds.'
+    Type: Number
+    Default: 60
+    MinValue: 1
+    MaxValue: 4000
+  LoadBalancerDeregistrationDelay:
+    Description: 'The amount time (in seconds) to wait before changing the state of a deregistering target from draining to unused.'
+    Type: Number
+    Default: 60
+    ConstraintDescription: 'Must be in the range [0-3600]'
+    MinValue: 0
+    MaxValue: 3600
   TaskPolicies:
     Description: 'Comma-delimited list of IAM managed policy ARNs to attach to the task IAM role'
     Type: String
@@ -145,7 +169,7 @@ Parameters:
   ProxyPort:
     Description: 'The port exposed by the proxy container that receives traffic from the load balancer (ProxyPort <> AppPort <> DatadogPort; ignored if ProxyImage is not set).'
     Type: Number
-    Default: 80
+    Default: 8000
     MinValue: 1
     MaxValue: 49150
   ProxyEnvironment1Key:
@@ -175,7 +199,7 @@ Parameters:
   AppImage:
     Description: 'The Docker image to use for the app container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
-    Default: 'celery'
+    Default: 'rabbitmq:management'
   AppCommand:
     Description: 'Optional commands (comma-delimited) used when starting the app container.'
     Type: String
@@ -183,7 +207,7 @@ Parameters:
   AppPort:
     Description: 'The port exposed by the app container that receives traffic from the load balancer or the proxy container (AppPort <> ProxyPort <> DatadogPort).'
     Type: Number
-    Default: 8000
+    Default: 8089
     MinValue: 1
     MaxValue: 49150
   AppEnvironment1Key:
@@ -208,102 +232,6 @@ Parameters:
     Default: ''
   AppEnvironment3Value:
     Description: 'Optional environment variable 3 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment4Key:
-    Description: 'Optional environment variable 4 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment4Value:
-    Description: 'Optional environment variable 4 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment5Key:
-    Description: 'Optional environment variable 5 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment5Value:
-    Description: 'Optional environment variable 5 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment6Key:
-    Description: 'Optional environment variable 6 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment6Value:
-    Description: 'Optional environment variable 6 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment7Key:
-    Description: 'Optional environment variable 7 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment7Value:
-    Description: 'Optional environment variable 7 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment8Key:
-    Description: 'Optional environment variable 8 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment8Value:
-    Description: 'Optional environment variable 8 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment9Key:
-    Description: 'Optional environment variable 8 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment9Value:
-    Description: 'Optional environment variable 8 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment10Key:
-    Description: 'Optional environment variable 10 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment10Value:
-    Description: 'Optional environment variable 10 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment11Key:
-    Description: 'Optional environment variable 11 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment11Value:
-    Description: 'Optional environment variable 11 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment12Key:
-    Description: 'Optional environment variable 12 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment12Value:
-    Description: 'Optional environment variable 12 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment13Key:
-    Description: 'Optional environment variable 13 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment13Value:
-    Description: 'Optional environment variable 13 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment14Key:
-    Description: 'Optional environment variable 14 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment14Value:
-    Description: 'Optional environment variable 14 value for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment15Key:
-    Description: 'Optional environment variable 15 key for app container.'
-    Type: String
-    Default: ''
-  AppEnvironment15Value:
-    Description: 'Optional environment variable 15 value for app container.'
     Type: String
     Default: ''
   DatadogImage:
@@ -368,6 +296,10 @@ Parameters:
     Description: 'Optional environment variable 6 value for Datadog container.'
     Type: String
     Default: ''
+  SubDomainNameWithDot:
+    Description: 'Name that is used to create the DNS entry with trailing dot, e.g. §{SubDomainNameWithDot}§{HostedZoneName}. Leave blank for naked (or apex and bare) domain. Requires ParentZoneStack parameter!'
+    Type: String
+    Default: ''
   Name:
     Description: 'The name of the service used for service discovery (Cloud Map).'
     Type: String
@@ -416,6 +348,12 @@ Parameters:
     Type: String
     Default: 'false'
     AllowedValues: ['true', 'false']
+  HealthCheckGracePeriod:
+    Description: 'The period of time, in seconds, that the Amazon ECS service scheduler ignores unhealthy Elastic Load Balancing target health checks after a task has first started.'
+    Type: Number
+    Default: 60
+    MinValue: 0
+    MaxValue: 1800
 Mappings:
   CpuMap:
     '0.25':
@@ -493,30 +431,27 @@ Mappings:
       Memory: 30720
 Conditions:
   HasPermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, '']]
+  HasAuthProxySecurityGroup: !Not [!Equals [!Ref ParentAuthProxyStack, '']]
+  HasNotAuthProxySecurityGroup: !Equals [!Ref ParentAuthProxyStack, '']
+  HasLoadBalancerSchemeInternetFacing: !Equals [!Ref LoadBalancerScheme, 'internet-facing']
+  HasLoadBalancerSchemeInternal: !Equals [!Ref LoadBalancerScheme, 'internal']
+  HasLoadBalancerCertificateArn: !Not [!Equals [!Ref LoadBalancerCertificateArn, '']]
+  HasAuthProxySecurityGroupAndLoadBalancerCertificateArn: !And [!Condition HasAuthProxySecurityGroup, !Condition HasLoadBalancerCertificateArn]
+  HasNotAuthProxySecurityGroupAndLoadBalancerCertificateArn: !And [!Condition HasNotAuthProxySecurityGroup, !Condition HasLoadBalancerCertificateArn]
   HasAlertTopic: !Not [!Equals [!Ref ParentAlertStack, '']]
+  HasZone: !Not [!Equals [!Ref ParentZoneStack, '']]
+  HasZoneAndLoadBalancerSchemeInternetFacing: !And [!Condition HasZone, !Condition HasLoadBalancerSchemeInternetFacing]
+  HasS3Bucket: !Not [!Equals [!Ref ParentS3StackAccessLog, '']]
   HasSubnetsReachPublic: !Equals [!Ref SubnetsReach, Public]
   HasAutoScaling: !Equals [!Ref AutoScaling, 'true']
   HasClientSecurityGroup1: !Not [!Equals [!Ref ParentClientStack1, '']]
   HasClientSecurityGroup2: !Not [!Equals [!Ref ParentClientStack2, '']]
-  HasClientSecurityGroup3: !Not [!Equals [!Ref ParentClientStack3, '']]  
-  HasSSHBastionSecurityGroup: !Not [!Equals [!Ref ParentSSHBastionStack, '']]
+  HasClientSecurityGroup3: !Not [!Equals [!Ref ParentClientStack3, '']]
   HasTaskPolicies: !Not [!Equals [!Ref TaskPolicies, '']]
   HasAppCommand: !Not [!Equals [!Ref AppCommand, '']]
   HasAppEnvironment1Key: !Not [!Equals [!Ref AppEnvironment1Key, '']]
   HasAppEnvironment2Key: !Not [!Equals [!Ref AppEnvironment2Key, '']]
   HasAppEnvironment3Key: !Not [!Equals [!Ref AppEnvironment3Key, '']]
-  HasAppEnvironment4Key: !Not [!Equals [!Ref AppEnvironment4Key, '']]
-  HasAppEnvironment5Key: !Not [!Equals [!Ref AppEnvironment5Key, '']]
-  HasAppEnvironment6Key: !Not [!Equals [!Ref AppEnvironment6Key, '']]
-  HasAppEnvironment7Key: !Not [!Equals [!Ref AppEnvironment7Key, '']]
-  HasAppEnvironment8Key: !Not [!Equals [!Ref AppEnvironment8Key, '']]
-  HasAppEnvironment9Key: !Not [!Equals [!Ref AppEnvironment9Key, '']]
-  HasAppEnvironment10Key: !Not [!Equals [!Ref AppEnvironment10Key, '']]
-  HasAppEnvironment11Key: !Not [!Equals [!Ref AppEnvironment11Key, '']]
-  HasAppEnvironment12Key: !Not [!Equals [!Ref AppEnvironment12Key, '']]
-  HasAppEnvironment13Key: !Not [!Equals [!Ref AppEnvironment13Key, '']]
-  HasAppEnvironment14Key: !Not [!Equals [!Ref AppEnvironment14Key, '']]
-  HasAppEnvironment15Key: !Not [!Equals [!Ref AppEnvironment15Key, '']]
   HasProxyImage: !Not [!Equals [!Ref ProxyImage, '']]
   HasProxyCommand: !Not [!Equals [!Ref ProxyCommand, '']]
   HasProxyEnvironment1Key: !Not [!Equals [!Ref ProxyEnvironment1Key, '']]
@@ -530,6 +465,7 @@ Conditions:
   HasDatadogEnvironment4Key: !Not [!Equals [!Ref DatadogEnvironment4Key, '']]
   HasDatadogEnvironment5Key: !Not [!Equals [!Ref DatadogEnvironment5Key, '']]
   HasDatadogEnvironment6Key: !Not [!Equals [!Ref DatadogEnvironment6Key, '']]
+  HasWAF: !Not [!Equals [!Ref ParentWAFStack, '']]
 Resources:
   ServiceDiscovery:
     Type: 'AWS::ServiceDiscovery::Service'
@@ -545,8 +481,250 @@ Resources:
         RoutingPolicy: MULTIVALUE
       HealthCheckCustomConfig:
         FailureThreshold: 1
-      Name: !Sub '${AWS::StackName}'
+      Name: !Ref Name
       NamespaceId: {'Fn::ImportValue': !Sub '${ParentCloudMapStack}-NamespaceID'}
+  RecordSet:
+    Condition: HasZone
+    Type: 'AWS::Route53::RecordSet'
+    Properties:
+      AliasTarget:
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+        DNSName: !GetAtt 'LoadBalancer.DNSName'
+      HostedZoneId: {'Fn::ImportValue': !Sub '${ParentZoneStack}-HostedZoneId'}
+      Name: !Sub
+      - '${SubDomainNameWithDot}${HostedZoneName}'
+      - SubDomainNameWithDot: !Ref SubDomainNameWithDot
+        HostedZoneName: {'Fn::ImportValue': !Sub '${ParentZoneStack}-HostedZoneName'}
+      Type: A
+  RecordSetIPv6:
+    Condition: HasZoneAndLoadBalancerSchemeInternetFacing
+    Type: 'AWS::Route53::RecordSet'
+    Properties:
+      AliasTarget:
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+        DNSName: !GetAtt 'LoadBalancer.DNSName'
+      HostedZoneId: {'Fn::ImportValue': !Sub '${ParentZoneStack}-HostedZoneId'}
+      Name: !Sub
+      - '${SubDomainNameWithDot}${HostedZoneName}'
+      - SubDomainNameWithDot: !Ref SubDomainNameWithDot
+        HostedZoneName: {'Fn::ImportValue': !Sub '${ParentZoneStack}-HostedZoneName'}
+      Type: AAAA
+  LoadBalancerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName : !Sub '${AWS::StackName}-load-balancer'
+      GroupDescription: !Sub '${AWS::StackName}-load-balancer'
+      VpcId: {'Fn::ImportValue': !Sub '${ParentVPCStack}-VPC'}
+  LoadBalancerSecurityGroupInHttpFromWorld:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: HasNotAuthProxySecurityGroup
+    Properties:
+      GroupId: !Ref LoadBalancerSecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      CidrIp: '0.0.0.0/0'
+  LoadBalancerSecurityGroupInHttpFromWorldIPv6:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: HasNotAuthProxySecurityGroup
+    Properties:
+      GroupId: !Ref LoadBalancerSecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      CidrIpv6: '::/0'
+  LoadBalancerSecurityGroupInHttpsFromWorld:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: HasNotAuthProxySecurityGroupAndLoadBalancerCertificateArn
+    Properties:
+      GroupId: !Ref LoadBalancerSecurityGroup
+      IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+      CidrIp: '0.0.0.0/0'
+  LoadBalancerSecurityGroupInHttpsFromWorldIPv6:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: HasNotAuthProxySecurityGroupAndLoadBalancerCertificateArn
+    Properties:
+      GroupId: !Ref LoadBalancerSecurityGroup
+      IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+      CidrIpv6: '::/0'
+  LoadBalancerSecurityGroupInHttpFromAuthProxy:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: HasAuthProxySecurityGroup
+    Properties:
+      GroupId: !Ref LoadBalancerSecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentAuthProxyStack}-SecurityGroup'}
+  LoadBalancerSecurityGroupInHttpsFromAuthProxy:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: HasAuthProxySecurityGroupAndLoadBalancerCertificateArn
+    Properties:
+      GroupId: !Ref LoadBalancerSecurityGroup
+      IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+      SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentAuthProxyStack}-SecurityGroup'}
+  LoadBalancer:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Name: !Sub '${AWS::StackName}'
+      IpAddressType: !If [HasLoadBalancerSchemeInternal, 'ipv4', 'dualstack']
+      LoadBalancerAttributes:
+      - Key: 'idle_timeout.timeout_seconds'
+        Value: !Ref LoadBalancerIdleTimeout
+      - Key: 'routing.http2.enabled'
+        Value: 'true'
+      - Key: 'access_logs.s3.enabled'
+        Value: !If [HasS3Bucket, 'true', 'false']
+      - !If [HasS3Bucket, {Key: 'access_logs.s3.prefix', Value: !Ref 'AWS::StackName'}, !Ref 'AWS::NoValue']
+      - !If [HasS3Bucket, {Key: 'access_logs.s3.bucket', Value: {'Fn::ImportValue': !Sub '${ParentS3StackAccessLog}-BucketName'}}, !Ref 'AWS::NoValue']
+      Scheme: !Ref LoadBalancerScheme
+      SecurityGroups:
+      - !Ref LoadBalancerSecurityGroup
+      Subnets: !If
+      - HasLoadBalancerSchemeInternal
+      - !Split [',', {'Fn::ImportValue': !Sub '${ParentVPCStack}-SubnetsPrivate'}]
+      - !Split [',', {'Fn::ImportValue': !Sub '${ParentVPCStack}-SubnetsPublic'}]
+      Type: application
+  WebACLAssociation:
+    Condition: HasWAF
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties:
+      ResourceArn: !Ref LoadBalancer
+      WebACLArn: {'Fn::ImportValue': !Sub '${ParentWAFStack}-WebACL'}
+  HTTPCodeELB5XXTooHighAlarm:
+    Condition: HasAlertTopic
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Sub '${AWS::StackName}-HTTPCodeELB5XXTooHighAlarm'
+      AlarmDescription: 'Application load balancer returns 5XX HTTP status codes'
+      Namespace: 'AWS/ApplicationELB'
+      MetricName: HTTPCode_ELB_5XX_Count
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 0
+      AlarmActions:
+      - {'Fn::ImportValue': !Sub '${ParentAlertStack}-TopicARN'}
+      Dimensions:
+      - Name: LoadBalancer
+        Value: !GetAtt 'LoadBalancer.LoadBalancerFullName'
+      TreatMissingData: notBreaching
+  RejectedConnectionCountTooHighAlarm:
+    Condition: HasAlertTopic
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Sub '${AWS::StackName}-RejectedConnectionCountTooHighAlarm'
+      AlarmDescription: 'Application load balancer rejected connections because the load balancer had reached its maximum number of connections'
+      Namespace: 'AWS/ApplicationELB'
+      MetricName: RejectedConnectionCount
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 0
+      AlarmActions:
+      - {'Fn::ImportValue': !Sub '${ParentAlertStack}-TopicARN'}
+      Dimensions:
+      - Name: LoadBalancer
+        Value: !GetAtt 'LoadBalancer.LoadBalancerFullName'
+      TreatMissingData: notBreaching
+  HttpListener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+      - !If
+        - HasLoadBalancerCertificateArn
+        - RedirectConfig:
+            Port: '443'
+            Protocol: HTTPS
+            StatusCode: 'HTTP_301'
+          Type: redirect
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+  HttpsListener:
+    Condition: HasLoadBalancerCertificateArn
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      Certificates:
+      - CertificateArn: !Ref LoadBalancerCertificateArn
+      DefaultActions:
+      - TargetGroupArn: !Ref TargetGroup
+        Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      SslPolicy: 'ELBSecurityPolicy-FS-1-2-Res-2019-08'
+  TargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      Name: !Sub '${AWS::StackName}'
+      HealthCheckIntervalSeconds: 15
+      HealthCheckPath: '/'
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 10
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200-299'
+      Port: 8080 # overriden when containers are attached
+      Protocol: HTTP
+      TargetType: ip
+      TargetGroupAttributes:
+      - Key: deregistration_delay.timeout_seconds
+        Value: !Ref LoadBalancerDeregistrationDelay
+      VpcId: {'Fn::ImportValue': !Sub '${ParentVPCStack}-VPC'}
+  HTTPCodeTarget5XXTooHighAlarm:
+    Condition: HasAlertTopic
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Sub '${AWS::StackName}-HTTPCodeTarget5XXTooHighAlarm'
+      AlarmDescription: 'Application load balancer receives 5XX HTTP status codes from targets'
+      Namespace: 'AWS/ApplicationELB'
+      MetricName: HTTPCode_Target_5XX_Count
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 0
+      AlarmActions:
+      - {'Fn::ImportValue': !Sub '${ParentAlertStack}-TopicARN'}
+      Dimensions:
+      - Name: LoadBalancer
+        Value: !GetAtt 'LoadBalancer.LoadBalancerFullName'
+      - Name: TargetGroup
+        Value: !GetAtt TargetGroup.TargetGroupFullName
+      TreatMissingData: notBreaching
+  TargetConnectionErrorCountTooHighAlarm:
+    Condition: HasAlertTopic
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: !Sub '${AWS::StackName}-TargetConnectionErrorCountTooHighAlarm'
+      AlarmDescription: 'Application load balancer could not connect to targets'
+      Namespace: 'AWS/ApplicationELB'
+      MetricName: TargetConnectionErrorCount
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 0
+      AlarmActions:
+      - {'Fn::ImportValue': !Sub '${ParentAlertStack}-TopicARN'}
+      Dimensions:
+      - Name: LoadBalancer
+        Value: !GetAtt 'LoadBalancer.LoadBalancerFullName'
+      - Name: TargetGroup
+        Value: !GetAtt TargetGroup.TargetGroupFullName
+      TreatMissingData: notBreaching
   TaskExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -615,10 +793,11 @@ Resources:
         Command: !If [HasAppCommand, !Split [',', !Ref AppCommand], !Ref 'AWS::NoValue']
         PortMappings:
         - ContainerPort: !Ref AppPort
+        - ContainerPort: 5557
           Protocol: tcp
         Essential: true
         dockerLabels:
-          com.datadoghq.ad.instances: '[{"host": "%%host%%"}]'
+          com.datadoghq.ad.instances: '[{"host": "%%host%%", "port": 5672}]'
           com.datadoghq.ad.check_names: '["!Ref Name"]'
           com.datadoghq.ad.init_configs: "[{}]"
         LogConfiguration:
@@ -631,18 +810,6 @@ Resources:
         - !If [HasAppEnvironment1Key, {Name: !Ref AppEnvironment1Key, Value: !Ref AppEnvironment1Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment2Key, {Name: !Ref AppEnvironment2Key, Value: !Ref AppEnvironment2Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment3Key, {Name: !Ref AppEnvironment3Key, Value: !Ref AppEnvironment3Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment4Key, {Name: !Ref AppEnvironment4Key, Value: !Ref AppEnvironment4Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment5Key, {Name: !Ref AppEnvironment5Key, Value: !Ref AppEnvironment5Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment6Key, {Name: !Ref AppEnvironment6Key, Value: !Ref AppEnvironment6Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment7Key, {Name: !Ref AppEnvironment7Key, Value: !Ref AppEnvironment7Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment8Key, {Name: !Ref AppEnvironment8Key, Value: !Ref AppEnvironment8Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment9Key, {Name: !Ref AppEnvironment9Key, Value: !Ref AppEnvironment9Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment10Key, {Name: !Ref AppEnvironment10Key, Value: !Ref AppEnvironment10Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment11Key, {Name: !Ref AppEnvironment11Key, Value: !Ref AppEnvironment11Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment12Key, {Name: !Ref AppEnvironment12Key, Value: !Ref AppEnvironment12Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment13Key, {Name: !Ref AppEnvironment13Key, Value: !Ref AppEnvironment13Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment14Key, {Name: !Ref AppEnvironment14Key, Value: !Ref AppEnvironment14Value}, !Ref 'AWS::NoValue']
-        - !If [HasAppEnvironment15Key, {Name: !Ref AppEnvironment15Key, Value: !Ref AppEnvironment15Value}, !Ref 'AWS::NoValue']
         Ulimits:
         - Name: 'nofile'
           SoftLimit: 1024000
@@ -690,20 +857,25 @@ Resources:
       VpcId: {'Fn::ImportValue': !Sub '${ParentVPCStack}-VPC'}
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
-        ToPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
+        FromPort: 0
+        ToPort: 65535
         SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentClientStack}-ClientSecurityGroup'}
+      - SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+        FromPort: 0
+        ToPort: 65535
+        IpProtocol: tcp
   ServiceSecurityGroupInSSHBastion:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Condition: HasSSHBastionSecurityGroup
     Properties:
       GroupId: !Ref ServiceSecurityGroup
       IpProtocol: tcp
-      FromPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
-      ToPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
+      FromPort: 0
+      ToPort: 65535
       SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentSSHBastionStack}-SecurityGroup'}
   Service:
     Type: 'AWS::ECS::Service'
+    DependsOn: HttpListener
     Properties:
       ServiceName: !Sub '${AWS::StackName}'
       Cluster: {'Fn::ImportValue': !Sub '${ParentClusterStack}-Cluster'}
@@ -711,11 +883,16 @@ Resources:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
       DesiredCount: !Ref DesiredCount
+      HealthCheckGracePeriodSeconds: !Ref HealthCheckGracePeriod
       LaunchType: FARGATE
       ServiceRegistries:
       - ContainerName: !If [HasProxyImage, proxy, !Ref Name]
         ContainerPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
         RegistryArn: !GetAtt 'ServiceDiscovery.Arn'
+      LoadBalancers:
+      - ContainerName: !If [HasProxyImage, proxy, !Ref Name]
+        ContainerPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
+        TargetGroupArn: !Ref TargetGroup
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: !If [HasSubnetsReachPublic, ENABLED, DISABLED]
@@ -881,10 +1058,20 @@ Resources:
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
-    Value: 'fargate/service-cloudmap'
+    Value: 'fargate/service-dedicated-alb'
   TemplateVersion:
     Description: 'cloudonaut.io template version.'
     Value: '__VERSION__'
   StackName:
     Description: 'Stack name.'
     Value: !Sub '${AWS::StackName}'
+  DNSName:
+    Description: 'The DNS name for the Fargate service load balancer.'
+    Value: !GetAtt 'LoadBalancer.DNSName'
+    Export:
+      Name: !Sub '${AWS::StackName}-DNSName'
+  URL:
+    Description: 'URL to the Fargate service.'
+    Value: !Sub 'http://${LoadBalancer.DNSName}'
+    Export:
+      Name: !Sub '${AWS::StackName}-URL'
