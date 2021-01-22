@@ -619,7 +619,7 @@ Resources:
         Essential: true
         dockerLabels:
           com.datadoghq.ad.instances: '[{"host": "%%host%%"}]'
-          com.datadoghq.ad.check_names: '["!Ref Name"]'
+          com.datadoghq.ad.check_names: '["celery"]'
           com.datadoghq.ad.init_configs: "[{}]"
         LogConfiguration:
           LogDriver: awslogs

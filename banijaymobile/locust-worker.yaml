@@ -175,7 +175,7 @@ Parameters:
   AppImage:
     Description: 'The Docker image to use for the app container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
-    Default: 'worker'
+    Default: 'locust-worker'
   AppCommand:
     Description: 'Optional commands (comma-delimited) used when starting the app container.'
     Type: String
@@ -619,7 +619,7 @@ Resources:
         Essential: true
         dockerLabels:
           com.datadoghq.ad.instances: '[{"host": "%%host%%"}]'
-          com.datadoghq.ad.check_names: '["!Ref Name"]'
+          com.datadoghq.ad.check_names: '["locust-worker"]'
           com.datadoghq.ad.init_configs: "[{}]"
         LogConfiguration:
           LogDriver: awslogs
