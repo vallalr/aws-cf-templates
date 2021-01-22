@@ -929,7 +929,7 @@ Resources:
           Protocol: tcp
         Essential: true
         dockerLabels:
-          com.datadoghq.ad.instances: '[{"host": "%%host%%", "port": 5672}]'
+          com.datadoghq.ad.instances: '[{"host": "%%host%%", "port": 5557}]'
           com.datadoghq.ad.check_names: '["locust-master"]'
           com.datadoghq.ad.init_configs: "[{}]"
         LogConfiguration:
