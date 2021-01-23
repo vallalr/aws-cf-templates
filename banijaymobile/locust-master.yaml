@@ -1019,9 +1019,9 @@ Resources:
     Condition: HasSSHBastionSecurityGroup
     Properties:
       GroupId: !Ref ServiceSecurityGroup
-      - IpProtocol: tcp
-        FromPort: 0
-        ToPort: 65535
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
       SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentSSHBastionStack}-SecurityGroup'}
   Service:
     Type: 'AWS::ECS::Service'
