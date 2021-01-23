@@ -1019,7 +1019,7 @@ Resources:
     Condition: HasSSHBastionSecurityGroup
     Properties:
       GroupId: !Ref ServiceSecurityGroup
-      IpProtocol: tcp
+      - IpProtocol: tcp
         FromPort: 0
         ToPort: 65535
       SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentSSHBastionStack}-SecurityGroup'}
