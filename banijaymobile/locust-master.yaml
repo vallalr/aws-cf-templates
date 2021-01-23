@@ -1020,8 +1020,8 @@ Resources:
     Properties:
       GroupId: !Ref ServiceSecurityGroup
       IpProtocol: tcp
-      FromPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
-      ToPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
+        FromPort: 0
+        ToPort: 65535
       SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentSSHBastionStack}-SecurityGroup'}
   Service:
     Type: 'AWS::ECS::Service'
