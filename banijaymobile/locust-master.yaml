@@ -149,6 +149,8 @@ Parameters:
     Default: ''
   ParentSSHBastionStack:
     Description: 'Optional but recommended stack name of parent SSH bastion host/instance stack based on vpc/vpc-*-bastion.yaml template.'
+    Type: String
+    Default: ''
   ParentWAFStack:
     Description: 'Optional stack name of parent WAF stack based on the security/waf.yaml template.'
     Type: String
