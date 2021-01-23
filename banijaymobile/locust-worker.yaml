@@ -888,3 +888,8 @@ Outputs:
   StackName:
     Description: 'Stack name.'
     Value: !Sub '${AWS::StackName}'
+  ClientSecurityGroup:
+    Description: 'Use this Security Group to reference incoming traffic from the host/instance.'
+    Value: !Ref ServiceSecurityGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-ClientSecurityGroup'
