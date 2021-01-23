@@ -925,7 +925,7 @@ Resources:
         install:
           packages:
             rpm:
-              jenkins: 'http://ftp-chi.osuosl.org/pub/jenkins/redhat-stable/jenkins-2.263.1-1.1.noarch.rpm'
+              jenkins: 'http://ftp-chi.osuosl.org/pub/jenkins/redhat-stable/jenkins-2.263.2-1.1.noarch.rpm'
             yum:
               'java-1.8.0-amazon-corretto': []
               'ruby': []
@@ -1316,8 +1316,9 @@ Resources:
         BlockDeviceMappings:
         - DeviceName: '/dev/xvda'
           Ebs:
+            Encrypted: true
             VolumeSize: !Ref MasterVolumeSize
-            VolumeType: gp2
+            VolumeType: gp3
         IamInstanceProfile:
           Name: !Ref MasterIP
         ImageId: !FindInMap [RegionMap, !Ref 'AWS::Region', AMI]
@@ -2041,8 +2042,9 @@ Resources:
         BlockDeviceMappings:
         - DeviceName: '/dev/xvda'
           Ebs:
+            Encrypted: true
             VolumeSize: !Ref AgentVolumeSize
-            VolumeType: gp2
+            VolumeType: gp3
         IamInstanceProfile:
           Name: !Ref AgentIP
         ImageId: !FindInMap [RegionMap, !Ref 'AWS::Region', AMI]
