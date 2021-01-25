@@ -16,6 +16,7 @@ Metadata:
       - ParentClientStack1
       - ParentClientStack2
       - ParentClientStack3
+      - ParentSSHBastionStack
       - ParentWAFStack
     - Label:
         default: 'Load Balancer Parameters'
@@ -135,6 +136,10 @@ Parameters:
     Default: ''
   ParentClientStack3:
     Description: 'Optional stack name of parent Client Security Group stack based on state/client-sg.yaml template to allow network access from the service to whatever uses the client security group.'
+    Type: String
+    Default: ''
+  ParentSSHBastionStack:
+    Description: 'Optional but recommended stack name of parent SSH bastion host/instance stack based on vpc/vpc-*-bastion.yaml template.'
     Type: String
     Default: ''
   ParentWAFStack:
@@ -555,6 +560,7 @@ Conditions:
   HasClientSecurityGroup1: !Not [!Equals [!Ref ParentClientStack1, '']]
   HasClientSecurityGroup2: !Not [!Equals [!Ref ParentClientStack2, '']]
   HasClientSecurityGroup3: !Not [!Equals [!Ref ParentClientStack3, '']]
+  HasSSHBastionSecurityGroup: !Not [!Equals [!Ref ParentSSHBastionStack, '']]
   HasTaskPolicies: !Not [!Equals [!Ref TaskPolicies, '']]
   HasAppCommand: !Not [!Equals [!Ref AppCommand, '']]
   HasAppEnvironment1Key: !Not [!Equals [!Ref AppEnvironment1Key, '']]
@@ -900,7 +906,7 @@ Resources:
             SoftLimit: 1024000
             HardLimit: 1024000
         - !Ref 'AWS::NoValue'
-      - Name: !Ref Name
+      - Name: django
         Image: !Ref AppImage
         Command: !If [HasAppCommand, !Split [',', !Ref AppCommand], !Ref 'AWS::NoValue']
         PortMappings:
@@ -916,7 +922,7 @@ Resources:
           Options:
             'awslogs-region': !Ref 'AWS::Region'
             'awslogs-group': !Ref LogGroup
-            'awslogs-stream-prefix': !Ref Name
+            'awslogs-stream-prefix': django
         Environment:
         - !If [HasAppEnvironment1Key, {Name: !Ref AppEnvironment1Key, Value: !Ref AppEnvironment1Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment2Key, {Name: !Ref AppEnvironment2Key, Value: !Ref AppEnvironment2Value}, !Ref 'AWS::NoValue']
@@ -983,6 +989,15 @@ Resources:
         FromPort: 0
         ToPort: 65535
         IpProtocol: tcp
+  ServiceSecurityGroupInSSHBastion:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: HasSSHBastionSecurityGroup
+    Properties:
+      GroupId: !Ref ServiceSecurityGroup
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+      SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ParentSSHBastionStack}-SecurityGroup'}
   Service:
     Type: 'AWS::ECS::Service'
     DependsOn: HttpListener
@@ -1181,3 +1196,8 @@ Outputs:
     Value: !Sub 'http://${LoadBalancer.DNSName}'
     Export:
       Name: !Sub '${AWS::StackName}-URL'
+  SecurityGroup:
+    Description: 'Use this Security Group to reference incoming traffic from the host/instance.'
+    Value: !Ref ServiceSecurityGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-SecurityGroup'
