@@ -66,8 +66,9 @@ Parameters:
   EngineVersion:
     Description: 'memcached version'
     Type: String
-    Default: '1.4.34'
+    Default: '1.6.6'
     AllowedValues: # aws elasticache describe-cache-engine-versions --engine memcached --query "CacheEngineVersions[].EngineVersion"
+    - '1.6.6'
     - '1.5.10'
     - '1.4.5'
     - '1.4.34'
@@ -96,6 +97,8 @@ Mappings:
       CacheParameterGroupFamily: 'memcached1.4'
     '1.5.10':
       CacheParameterGroupFamily: 'memcached1.5'
+    '1.6.6':
+      CacheParameterGroupFamily: 'memcached1.6'
 Conditions:
   HasPermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, '']]
   HasZone: !Not [!Equals [!Ref ParentZoneStack, '']]
