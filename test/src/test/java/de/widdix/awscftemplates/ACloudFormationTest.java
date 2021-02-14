@@ -27,7 +27,7 @@ public abstract class ACloudFormationTest extends AAWSTest {
         }
     }
 
-    private final AmazonCloudFormation cf = AmazonCloudFormationClientBuilder.standard().withCredentials(this.credentialsProvider).build();
+    protected final AmazonCloudFormation cf = AmazonCloudFormationClientBuilder.standard().withCredentials(this.credentialsProvider).build();
 
     public ACloudFormationTest() {
         super();
@@ -46,13 +46,13 @@ public abstract class ACloudFormationTest extends AAWSTest {
                 final String bucketRegion = Config.get(Config.Key.BUCKET_REGION);
                 final AmazonS3 s3local = AmazonS3ClientBuilder.standard().withCredentials(this.credentialsProvider).withRegion(bucketRegion).build();
                 s3local.putObject(bucketName, stackName, new File(dir + template));
-                req = req.withTemplateURL("https://s3-" + bucketRegion + ".amazonaws.com/" + bucketName + "/" + stackName);
+                req = req.withTemplateURL("https://" + bucketName + ".s3." + bucketRegion + ".amazonaws.com/" + stackName);
             } else {
                 final String body = readFile(dir + template, StandardCharsets.UTF_8);
                 req = req.withTemplateBody(body);
             }
         } else {
-            req = req.withTemplateURL("https://s3-eu-west-1.amazonaws.com/widdix-aws-cf-templates/" + template);
+            req = req.withTemplateURL("https://widdix-aws-cf-templates.s3.eu-west-1.amazonaws.com/" + template);
         }
         if (Config.get(Config.Key.FAILURE_POLICY).equals("retain")) {
             req = req.withOnFailure(OnFailure.DO_NOTHING);
@@ -73,13 +73,13 @@ public abstract class ACloudFormationTest extends AAWSTest {
                 final String bucketRegion = Config.get(Config.Key.BUCKET_REGION);
                 final AmazonS3 s3local = AmazonS3ClientBuilder.standard().withCredentials(this.credentialsProvider).withRegion(bucketRegion).build();
                 s3local.putObject(bucketName, stackName, new File(dir + template));
-                req = req.withTemplateURL("https://s3-" + bucketRegion + ".amazonaws.com/" + bucketName + "/" + stackName);
+                req = req.withTemplateURL("https://" + bucketName + ".s3." + bucketRegion + ".amazonaws.com/" + stackName);
             } else {
                 final String body = readFile(dir + template, StandardCharsets.UTF_8);
                 req = req.withTemplateBody(body);
             }
         } else {
-            req = req.withTemplateURL("https://s3-eu-west-1.amazonaws.com/widdix-aws-cf-templates/" + template);
+            req = req.withTemplateURL("https://widdix-aws-cf-templates.s3.eu-west-1.amazonaws.com/" + template);
         }
         this.cf.updateStack(req);
         this.waitForStack(context, stackName, FinalStatus.UPDATE_COMPLETE);
@@ -123,7 +123,7 @@ public abstract class ACloudFormationTest extends AAWSTest {
         return events;
     }
 
-    private void waitForStack(final Context context, final String stackName, final FinalStatus finalStackStatus) {
+    protected void waitForStack(final Context context, final String stackName, final FinalStatus finalStackStatus) {
         System.out.println("waitForStack[" + stackName + "]: to reach status " + finalStackStatus.finalStatus);
         final List<StackEvent> eventsDisplayed = new ArrayList<>();
         while (true) {
