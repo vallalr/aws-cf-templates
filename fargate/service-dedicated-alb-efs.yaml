@@ -802,7 +802,7 @@ Resources:
       - IpProtocol: tcp
         FromPort: 2049
         ToPort: 2049
-        SourceSecurityGroupId: !Ref WebServerSecurityGroup
+        SourceSecurityGroupId: !Ref ServiceSecurityGroup
   LambdaRole:
     Condition: HasEFSProvisionedThroughput
     Type: 'AWS::IAM::Role'
