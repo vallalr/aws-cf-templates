@@ -853,7 +853,7 @@ Resources:
     Type: 'AWS::Logs::LogGroup'
     Properties:
       LogGroupName: !Sub '/aws/lambda/${LambdaFunction}'
-      RetentionInDays: !Ref WebServerLogsRetentionInDays
+      RetentionInDays: !Ref EFSBackupRetentionPeriod
   MaxThroughputCalculator:
     Condition: HasEFSProvisionedThroughput
     Type: 'Custom::MaxThroughputCalculator'
