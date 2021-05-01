@@ -712,6 +712,7 @@ Resources:
   EFSFileSystem:
     Type: 'AWS::EFS::FileSystem'
     Properties:
+      Encrypted: true
       ThroughputMode: !If [HasEFSProvisionedThroughput, 'provisioned', 'bursting']
       ProvisionedThroughputInMibps: !If [HasEFSProvisionedThroughput, !Ref EFSProvisionedThroughputInMibps, !Ref 'AWS::NoValue']
       FileSystemTags:
@@ -906,6 +907,11 @@ Resources:
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties:
+      Volumes:
+        - Name: efs
+          EFSVolumeConfiguration:
+            FilesystemId: !Ref EFSFileSystem
+            TransitEncryption: ENABLED
       ContainerDefinitions:
       - !If
         - HasProxyImage
@@ -953,6 +959,10 @@ Resources:
           - ContainerPort: !Ref SidecarPort
             Protocol: tcp
           Essential: true
+          MountPoints:
+            - SourceVolume: efs
+              ContainerPath: '/var/www/html'
+              ReadOnly: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
