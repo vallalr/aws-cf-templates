@@ -940,6 +940,10 @@ Resources:
         - ContainerPort: !Ref AppPort
           Protocol: tcp
         Essential: true
+          MountPoints:
+            - SourceVolume: efs
+              ContainerPath: '/var/www/html'
+              ReadOnly: false
         LogConfiguration:
           LogDriver: awslogs
           Options:
@@ -959,10 +963,6 @@ Resources:
           - ContainerPort: !Ref SidecarPort
             Protocol: tcp
           Essential: true
-          MountPoints:
-            - SourceVolume: efs
-              ContainerPath: '/var/www/html'
-              ReadOnly: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
