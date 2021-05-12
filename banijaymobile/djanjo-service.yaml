@@ -71,6 +71,16 @@ Metadata:
       - AppEnvironment14Value
       - AppEnvironment15Key
       - AppEnvironment15Value
+      - AppEnvironment16Key
+      - AppEnvironment16Value
+      - AppEnvironment17Key
+      - AppEnvironment17Value
+      - AppEnvironment18Key
+      - AppEnvironment18Value
+      - AppEnvironment19Key
+      - AppEnvironment19Value
+      - AppEnvironment20Key
+      - AppEnvironment20Value
       - DatadogImage
       - DatadogCommand
       - DatadogPort
@@ -350,6 +360,46 @@ Parameters:
     Description: 'Optional environment variable 15 value for app container.'
     Type: String
     Default: ''
+  AppEnvironment16Key:
+    Description: 'Optional environment variable 11 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment16Value:
+    Description: 'Optional environment variable 11 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment17Key:
+    Description: 'Optional environment variable 12 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment17Value:
+    Description: 'Optional environment variable 12 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment18Key:
+    Description: 'Optional environment variable 13 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment18Value:
+    Description: 'Optional environment variable 13 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment19Key:
+    Description: 'Optional environment variable 14 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment19Value:
+    Description: 'Optional environment variable 14 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment20Key:
+    Description: 'Optional environment variable 15 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment20Value:
+    Description: 'Optional environment variable 15 value for app container.'
+    Type: String
+    Default: ''
   DatadogImage:
     Description: 'Optional Docker image to use for the Datadog container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
@@ -578,6 +628,11 @@ Conditions:
   HasAppEnvironment13Key: !Not [!Equals [!Ref AppEnvironment13Key, '']]
   HasAppEnvironment14Key: !Not [!Equals [!Ref AppEnvironment14Key, '']]
   HasAppEnvironment15Key: !Not [!Equals [!Ref AppEnvironment15Key, '']]
+  HasAppEnvironment16Key: !Not [!Equals [!Ref AppEnvironment16Key, '']]
+  HasAppEnvironment17Key: !Not [!Equals [!Ref AppEnvironment17Key, '']]
+  HasAppEnvironment18Key: !Not [!Equals [!Ref AppEnvironment18Key, '']]
+  HasAppEnvironment19Key: !Not [!Equals [!Ref AppEnvironment19Key, '']]
+  HasAppEnvironment20Key: !Not [!Equals [!Ref AppEnvironment20Key, '']]
   HasProxyImage: !Not [!Equals [!Ref ProxyImage, '']]
   HasProxyCommand: !Not [!Equals [!Ref ProxyCommand, '']]
   HasProxyEnvironment1Key: !Not [!Equals [!Ref ProxyEnvironment1Key, '']]
@@ -939,6 +994,11 @@ Resources:
         - !If [HasAppEnvironment13Key, {Name: !Ref AppEnvironment13Key, Value: !Ref AppEnvironment13Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment14Key, {Name: !Ref AppEnvironment14Key, Value: !Ref AppEnvironment14Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment15Key, {Name: !Ref AppEnvironment15Key, Value: !Ref AppEnvironment15Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment16Key, {Name: !Ref AppEnvironment16Key, Value: !Ref AppEnvironment16Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment17Key, {Name: !Ref AppEnvironment17Key, Value: !Ref AppEnvironment17Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment18Key, {Name: !Ref AppEnvironment18Key, Value: !Ref AppEnvironment18Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment19Key, {Name: !Ref AppEnvironment19Key, Value: !Ref AppEnvironment19Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment20Key, {Name: !Ref AppEnvironment20Key, Value: !Ref AppEnvironment20Value}, !Ref 'AWS::NoValue']
         Ulimits:
         - Name: 'nofile'
           SoftLimit: 1024000
