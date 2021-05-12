@@ -60,6 +60,12 @@ jobs:
           find: ", contributed by https://github.com/statik"
           replace: "."
 
+      - name: contributed-3
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", contributed by https://github.com/shotty1'"
+          replace: "."
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
