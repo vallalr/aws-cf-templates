@@ -63,7 +63,7 @@ jobs:
       - name: contributed-3
         uses: jacobtomlinson/gha-find-replace@master
         with:
-          find: ", contributed by https://github.com/shotty1'"
+          find: ", contributed by https://github.com/shotty1"
           replace: "."
 
       - name: Configure AWS Credentials
