@@ -1,0 +1,126 @@
+[
+    {
+        "ParameterValue": "cron(0 5 ? * SUN *)", 
+        "ParameterKey": "MaintenanceWindowSchedule"
+    }, 
+    {
+        "ParameterValue": "zone-public", 
+        "ParameterKey": "ParentZoneStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentClientStack3"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "UserData"
+    }, 
+    {
+        "ParameterValue": "boundary-vpc", 
+        "ParameterKey": "ParentVPCStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "RestoreImageId"
+    }, 
+    {
+        "ParameterValue": "boundary-alert", 
+        "ParameterKey": "ParentAlertStack"
+    }, 
+    {
+        "ParameterValue": "true", 
+        "ParameterKey": "IAMUserSSHAccess"
+    }, 
+    {
+        "ParameterValue": "boundary-worker-1", 
+        "ParameterKey": "Name"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "PermissionsBoundary"
+    }, 
+    {
+        "ParameterValue": "30", 
+        "ParameterKey": "RootVolumeSize"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentSSHBastionStack"
+    }, 
+    {
+        "ParameterValue": "t3.small", 
+        "ParameterKey": "InstanceType"
+    }, 
+    {
+        "ParameterValue": "boundary-kms-key", 
+        "ParameterKey": "ParentKmsKeyStack"
+    }, 
+    {
+        "ParameterValue": "UTC", 
+        "ParameterKey": "MaintenanceWindowScheduleTimezone"
+    }, 
+    {
+        "ParameterValue": "boundary-worker-1.", 
+        "ParameterKey": "SubDomainNameWithDot"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "IngressTcpPort2"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "IngressTcpPort1"
+    }, 
+    {
+        "ParameterValue": "14", 
+        "ParameterKey": "LogsRetentionInDays"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "IngressTcpPort3"
+    }, 
+    {
+        "ParameterValue": "vallal", 
+        "ParameterKey": "KeyName"
+    }, 
+    {
+        "ParameterValue": "SubnetBPublic", 
+        "ParameterKey": "SubnetName"
+    }, 
+    {
+        "ParameterValue": "arn:aws:iam::874370287054:policy/boundary-policy", 
+        "ParameterKey": "ManagedPolicyArns"
+    }, 
+    {
+        "ParameterValue": "20210126.0", 
+        "ParameterKey": "AmazonLinux2Version"
+    }, 
+    {
+        "ParameterValue": "cron(0 4 ? * * *)", 
+        "ParameterKey": "BackupScheduleExpression"
+    }, 
+    {
+        "ParameterValue": "boundary-client-sg", 
+        "ParameterKey": "ParentClientStack1"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "IngressTcpParentClientStack1"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentClientStack2"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "IngressTcpParentClientStack2"
+    }, 
+    {
+        "ParameterValue": "30", 
+        "ParameterKey": "BackupRetentionPeriod"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "IngressTcpParentClientStack3"
+    }
+]
