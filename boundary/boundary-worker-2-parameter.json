@@ -4,7 +4,7 @@
         "ParameterKey": "MaintenanceWindowSchedule"
     }, 
     {
-        "ParameterValue": "zone-public", 
+        "ParameterValue": "", 
         "ParameterKey": "ParentZoneStack"
     }, 
     {
@@ -32,7 +32,7 @@
         "ParameterKey": "IAMUserSSHAccess"
     }, 
     {
-        "ParameterValue": "boundary-controller-0", 
+        "ParameterValue": "boundary-worker-2", 
         "ParameterKey": "Name"
     }, 
     {
@@ -60,7 +60,7 @@
         "ParameterKey": "MaintenanceWindowScheduleTimezone"
     }, 
     {
-        "ParameterValue": "boundary-controller-0.", 
+        "ParameterValue": "boundary-worker-2.", 
         "ParameterKey": "SubDomainNameWithDot"
     }, 
     {
@@ -88,7 +88,7 @@
         "ParameterKey": "SubnetName"
     }, 
     {
-        "ParameterValue": "arn:aws:iam::874370287054:policy/boundary-policy", 
+        "ParameterValue": "arn:aws:iam::273432862443:policy/boundary-policy", 
         "ParameterKey": "ManagedPolicyArns"
     }, 
     {
