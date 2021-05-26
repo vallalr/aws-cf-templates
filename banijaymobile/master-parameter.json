@@ -1,0 +1,350 @@
+[
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyImage"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment4Key"
+    }, 
+    {
+        "ParameterValue": "central-cluster", 
+        "ParameterKey": "ParentClusterStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment12Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment8Key"
+    }, 
+    {
+        "ParameterValue": "vpc", 
+        "ParameterKey": "ParentVPCStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment12Value"
+    }, 
+    {
+        "ParameterValue": "8", 
+        "ParameterKey": "Memory"
+    }, 
+    {
+        "ParameterValue": "internet-facing", 
+        "ParameterKey": "LoadBalancerScheme"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment5Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyCommand"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment5Key"
+    }, 
+    {
+        "ParameterValue": "4", 
+        "ParameterKey": "Cpu"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment7Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment2Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentS3StackAccessLog"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "PermissionsBoundary"
+    }, 
+    {
+        "ParameterValue": "arn:aws:acm:eu-central-1:151316619227:certificate/053076d1-b2c6-4745-9253-e7cdfb8421df", 
+        "ParameterKey": "LoadBalancerCertificateArn"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment1Key"
+    }, 
+    {
+        "ParameterValue": "locust", 
+        "ParameterKey": "Name"
+    }, 
+    {
+        "ParameterValue": "client-sg", 
+        "ParameterKey": "ParentClientStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentSSHBastionStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment8Value"
+    }, 
+    {
+        "ParameterValue": "https://locust.banijaymobile.com", 
+        "ParameterKey": "AppEnvironment1Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogImage"
+    }, 
+    {
+        "ParameterValue": "SERVER_ADDRESS", 
+        "ParameterKey": "AppEnvironment1Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment11Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment4Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyEnvironment1Value"
+    }, 
+    {
+        "ParameterValue": "1", 
+        "ParameterKey": "MaxCapacity"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyEnvironment1Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment1Value"
+    }, 
+    {
+        "ParameterValue": "60", 
+        "ParameterKey": "LoadBalancerDeregistrationDelay"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment3Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment3Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment7Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment6Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyEnvironment2Value"
+    }, 
+    {
+        "ParameterValue": "1", 
+        "ParameterKey": "DesiredCount"
+    }, 
+    {
+        "ParameterValue": "1", 
+        "ParameterKey": "MinCapacity"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment2Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment13Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogCommand"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment3Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment6Value"
+    }, 
+    {
+        "ParameterValue": "cloudmap-private", 
+        "ParameterKey": "ParentCloudMapStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentClientStack1"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentClientStack2"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment9Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment13Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment6Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment10Key"
+    }, 
+    {
+        "ParameterValue": "Public", 
+        "ParameterKey": "SubnetsReach"
+    }, 
+    {
+        "ParameterValue": "9000", 
+        "ParameterKey": "DatadogPort"
+    }, 
+    {
+        "ParameterValue": "zone-public", 
+        "ParameterKey": "ParentZoneStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentClientStack3"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment2Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyEnvironment2Key"
+    }, 
+    {
+        "ParameterValue": "8089", 
+        "ParameterKey": "AppPort"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment4Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyEnvironment3Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment6Key"
+    }, 
+    {
+        "ParameterValue": "alert", 
+        "ParameterKey": "ParentAlertStack"
+    }, 
+    {
+        "ParameterValue": "60", 
+        "ParameterKey": "HealthCheckGracePeriod"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment15Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment3Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment10Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment5Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment14Key"
+    }, 
+    {
+        "ParameterValue": "false", 
+        "ParameterKey": "AutoScaling"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment14Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment5Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentAuthProxyStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment11Key"
+    }, 
+    {
+        "ParameterValue": "locust.", 
+        "ParameterKey": "SubDomainNameWithDot"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ProxyEnvironment3Key"
+    }, 
+    {
+        "ParameterValue": "151316619227.dkr.ecr.eu-central-1.amazonaws.com/locust-master", 
+        "ParameterKey": "AppImage"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment9Key"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "ParentWAFStack"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "TaskPolicies"
+    }, 
+    {
+        "ParameterValue": "14", 
+        "ParameterKey": "LogsRetentionInDays"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment4Key"
+    }, 
+    {
+        "ParameterValue": "60", 
+        "ParameterKey": "LoadBalancerIdleTimeout"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppCommand"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "DatadogEnvironment2Value"
+    }, 
+    {
+        "ParameterValue": "", 
+        "ParameterKey": "AppEnvironment15Key"
+    }, 
+    {
+        "ParameterValue": "8000", 
+        "ParameterKey": "ProxyPort"
+    }
+]
