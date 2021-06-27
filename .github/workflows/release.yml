@@ -66,6 +66,12 @@ jobs:
           find: ", contributed by https://github.com/shotty1"
           replace: "."
 
+      - name: domain
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", widdix.de"
+          replace: "adappt.co.uk"
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
