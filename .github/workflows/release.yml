@@ -69,7 +69,7 @@ jobs:
       - name: domain
         uses: jacobtomlinson/gha-find-replace@master
         with:
-          find: ", widdix.de"
+          find: "widdix.de"
           replace: "adappt.co.uk"
 
       - name: Configure AWS Credentials
