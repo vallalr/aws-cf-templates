@@ -91,4 +91,4 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       - name: Deploy the files to S3 bucket
-        run: aws s3 sync . s3://${{ env.S3_BUCKET_NAME }} --exclude '.git/*' --exclude '.github/*' --exclude '.gitignore' --exclude '.yamllint' --exclude 'LICENSE' --exclude 'mkdocs.yml' --exclude 'README.md' --exclude '.readthedocs.yaml --exclude 'setup.py' --exclude 'docs/*' --exclude 'test/*' --exclude '*.md' --delete --exclude '*.js' --delete
+        run: aws s3 sync . s3://${{ env.S3_BUCKET_NAME }} --exclude '.git/*' --exclude '.github/*' --exclude '.gitignore' --exclude '.yamllint' --exclude 'LICENSE' --exclude 'mkdocs.yml' --exclude 'README.md' --exclude '.readthedocs.yaml --exclude 'setup.py' --exclude 'docs/*' --exclude 'test/*' --exclude '*.js' --exclude '*.md' --delete
