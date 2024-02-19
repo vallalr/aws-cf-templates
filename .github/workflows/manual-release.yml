@@ -40,50 +40,50 @@ jobs:
           find: "__VERSION__"
           replace: "${{ github.event.inputs.version }}"
 
-          - name: content-1
-          run: |
-            find . -type f -name '*.yaml' | while read file; do set -ex && sed -i "/# Copyright 2018 widdix GmbH/,+12 d" "$file"; done;
-  
-        - name: content-2
-          run: |
-            find . -type f -name '*.yaml' | while read file; do set -ex && sed -i "/# Copyright 2019 widdix GmbH/,+12 d" "$file"; done;
-  
-        - name: wait
-          uses: jacobtomlinson/gha-find-replace@master
-          with:
-            find: "waits for https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/655"
-            replace: "still work in progress"
-  
-        - name: sponsored
-          uses: jacobtomlinson/gha-find-replace@master
-          with:
-            find: ", sponsored by https://github.com/ngault"
-            replace: "."
-  
-        - name: contributed-1
-          uses: jacobtomlinson/gha-find-replace@master
-          with:
-            find: ", contributed by https://github.com/btsuhako"
-            replace: "."
-  
-        - name: contributed-2
-          uses: jacobtomlinson/gha-find-replace@master
-          with:
-            find: ", contributed by https://github.com/statik"
-            replace: "."
-  
-        - name: contributed-3
-          uses: jacobtomlinson/gha-find-replace@master
-          with:
-            find: ", contributed by https://github.com/shotty1"
-            replace: "."
-  
-        - name: domain
-          uses: jacobtomlinson/gha-find-replace@master
-          with:
-            find: "widdix.de"
-            replace: "adappt.ai"
-  
+      - name: content-1
+        run: |
+          find . -type f -name '*.yaml' | while read file; do set -ex && sed -i "/# Copyright 2018 widdix GmbH/,+12 d" "$file"; done;
+
+      - name: content-2
+        run: |
+          find . -type f -name '*.yaml' | while read file; do set -ex && sed -i "/# Copyright 2019 widdix GmbH/,+12 d" "$file"; done;
+
+      - name: wait
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "waits for https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/655"
+          replace: "still work in progress"
+
+      - name: sponsored
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", sponsored by https://github.com/ngault"
+          replace: "."
+
+      - name: contributed-1
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", contributed by https://github.com/btsuhako"
+          replace: "."
+
+      - name: contributed-2
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", contributed by https://github.com/statik"
+          replace: "."
+
+      - name: contributed-3
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", contributed by https://github.com/shotty1"
+          replace: "."
+
+      - name: domain
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "widdix.de"
+          replace: "adappt.ai"
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
