@@ -1,0 +1,94 @@
+name: Manually triggered workflow
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version Number'
+        required: true
+        default: '1.0.0'
+      company:
+        description: 'Company Name'
+        required: true
+        default: 'adappt.ai'
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'cloud'
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.event.inputs.environment }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: company
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "cloudonaut.io"
+          replace: "${{ github.event.inputs.company }}"
+
+      - name: version
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "__VERSION__"
+          replace: "${{ github.event.inputs.version }}"
+
+      - name: content-1
+        run: |
+          find . -type f -name '*.yaml' | while read file; do set -ex && sed -i "/# Copyright 2018 widdix GmbH/,+12 d" "$file"; done;
+
+      - name: content-2
+        run: |
+          find . -type f -name '*.yaml' | while read file; do set -ex && sed -i "/# Copyright 2019 widdix GmbH/,+12 d" "$file"; done;
+
+      - name: wait
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "waits for https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/655"
+          replace: "still work in progress"
+
+      - name: sponsored
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", sponsored by https://github.com/ngault"
+          replace: "."
+
+      - name: contributed-1
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", contributed by https://github.com/btsuhako"
+          replace: "."
+
+      - name: contributed-2
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", contributed by https://github.com/statik"
+          replace: "."
+
+      - name: contributed-3
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: ", contributed by https://github.com/shotty1"
+          replace: "."
+
+      - name: domain
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "widdix.de"
+          replace: "adappt.ai"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Deploy the files to S3 bucket
+        run: aws s3 sync . s3://${{ env.S3_BUCKET_NAME }} --exclude '.git/*' --exclude '.github/*' --exclude '.gitignore' --exclude '.yamllint' --exclude 'LICENSE' --exclude 'mkdocs.yml' --exclude 'README.md' --exclude '.readthedocs.yaml' --exclude 'setup.py' --exclude 'docs/*' --exclude 'test/*' --exclude '*.js' --exclude '*.md' --delete
