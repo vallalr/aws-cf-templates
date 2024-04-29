@@ -101,11 +101,11 @@ jobs:
         with:
           name: deployment-files
           path: |
-            **/*
+            **
             !.git/**
             !.github/**
-            !*.gitignore
-            !*.yamllint
+            !.gitignore
+            !.yamllint
             !LICENSE
             !mkdocs.yml
             !README.md
