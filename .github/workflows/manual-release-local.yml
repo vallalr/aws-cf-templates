@@ -113,5 +113,5 @@ jobs:
             !setup.py
             !docs/**
             !test/**
-            !*.js
-            !*.md
+            !**/*.js
+            !**/*.md
