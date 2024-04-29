@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'EC2: Amazon Linux 2 (mutable, public), a adappt.ai template'
+Description: 'EC2: Amazon Linux 2 (mutable, public), a cloudonaut.io template'
 Metadata:
   'AWS::CloudFormation::Interface':
     ParameterGroups:
@@ -92,7 +92,7 @@ Parameters:
     Type: String
     Default: ''
   IAMUserSSHAccess:
-    Description: 'Synchronize public keys of IAM users to enable personalized SSH access (Doc: https://adappt.ai/manage-aws-ec2-ssh-access-with-iam/).'
+    Description: 'Synchronize public keys of IAM users to enable personalized SSH access (Doc: https://cloudonaut.io/manage-aws-ec2-ssh-access-with-iam/).'
     Type: String
     Default: false
     AllowedValues:
@@ -1801,10 +1801,10 @@ Resources:
         SelectionName: !Ref 'AWS::StackName'
 Outputs:
   TemplateID:
-    Description: 'adappt.ai template id.'
+    Description: 'cloudonaut.io template id.'
     Value: 'ec2/al2-mutable-public-centos'
   TemplateVersion:
-    Description: 'adappt.ai template version.'
+    Description: 'cloudonaut.io template version.'
     Value: '__VERSION__'
   StackName:
     Description: 'Stack name.'
