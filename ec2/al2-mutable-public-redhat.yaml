@@ -1183,6 +1183,16 @@ Resources:
             - 'logs:DescribeLogStreams'
             - 'logs:DescribeLogGroups'
             Resource: !GetAtt 'Logs.Arn'
+      - PolicyName: s3
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Sid: "FullAccessToS3BucketsAndObjects"
+            Effect: "Allow"
+            Action: "s3:*"
+            Resource:
+              - "arn:aws:s3:::*backups*"
+              - "arn:aws:s3:::*backups*/*"
   IAMPolicySSM:
     Type: 'AWS::IAM::Policy'
     Properties:
