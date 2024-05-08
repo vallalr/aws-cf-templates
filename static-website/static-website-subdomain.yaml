@@ -182,10 +182,7 @@ Resources:
   S3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub
-      - '${SubDomainNameWithDot}${HostedZoneName}'
-      - SubDomainNameWithDot: !Ref SubDomainNameWithDot
-        HostedZoneName: {'Fn::ImportValue': !Sub '${ParentZoneStack}-HostedZoneName'}
+      BucketName: !Select [0, !Split [".", !Ref SubDomainNameWithDot]]
       PublicAccessBlockConfiguration: # AWS Foundational Security Best Practices v1.0.0 S3.8
         BlockPublicAcls: true
         BlockPublicPolicy: true
