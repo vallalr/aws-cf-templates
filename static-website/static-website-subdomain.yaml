@@ -183,6 +183,8 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: !Select [0, !Split [".", !Ref SubDomainNameWithDot]]
+      VersioningConfiguration:
+        Status: Enabled
       PublicAccessBlockConfiguration: # AWS Foundational Security Best Practices v1.0.0 S3.8
         BlockPublicAcls: true
         BlockPublicPolicy: true
