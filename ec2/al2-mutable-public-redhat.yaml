@@ -1,19 +1,6 @@
 ---
-# Copyright 2018 widdix GmbH
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'EC2: Amazon Linux 2 (mutable, private), a cloudonaut.io template'
+Description: 'EC2: Amazon Linux 2 (mutable, public), a cloudonaut.io template'
 Metadata:
   'AWS::CloudFormation::Interface':
     ParameterGroups:
@@ -25,6 +12,7 @@ Metadata:
       - ParentAlertStack
       - ParentKmsKeyStack
       - ParentZoneStack
+      - HostedZoneName
       - ParentClientStack1
       - ParentClientStack2
       - ParentClientStack3
@@ -83,6 +71,10 @@ Parameters:
     Description: 'Optional stack name of parent zone stack based on vpc/zone-*.yaml template.'
     Type: String
     Default: ''
+  HostedZoneName:
+    Description: Optional to set the DNS name of the hosted zone (e.g., "mydomain.com").
+    Type: String
+    Default: 'adapptlabs.com'
   ParentClientStack1:
     Description: 'Optional stack name of parent Client Security Group stack based on state/client-sg.yaml template to allow network access from the EC2 instance to whatever uses the client security group.'
     Type: String
@@ -117,12 +109,12 @@ Parameters:
   SubnetName:
     Description: 'Subnet name of parent VPC stack based on vpc/vpc-*azs.yaml template.'
     Type: String
-    Default: SubnetAPrivate
+    Default: SubnetAPublic
     AllowedValues:
-    - SubnetAPrivate
-    - SubnetBPrivate
-    - SubnetCPrivate
-    - SubnetDPrivate
+    - SubnetAPublic
+    - SubnetBPublic
+    - SubnetCPublic
+    - SubnetDPublic
   LogsRetentionInDays:
     Description: 'Specifies the number of days you want to retain log events.'
     Type: Number
@@ -196,11 +188,11 @@ Parameters:
   RestoreImageId:
     Description: 'Restore from existing Amazon Machine Image (AMI).'
     Type: String
-    Default: ''
+    Default: 'ami-08e592fbb0f535224'
   AmazonLinux2Version:
     Description: 'Version of Amazon Linux 2 to boot from the first time (ignored if RestoreImageId is set; select the latest version for new stacks; OS updates are enabled to patch the system).'
     Type: String
-    AllowedValues: ['20240109.0', '20230727.0', '20220316.0', '20220218.3', '20220218.1', '20220207.1', '20211223.0', '20211005.0', '20210721.2', '20210617.0', '20210126.0', '20200917.0', '20200722.0', '20200520.1', '20200406.0', '20200304.0', '20200207.1', '20191217.0']
+    AllowedValues: ['20240109.0', '20230727.0', '20220316.0', '20220218.3', '20220218.1', '20211223.0', '20211005.0', '20210721.2', '20210617.0', '20210126.0', '20200917.0', '20200722.0', '20200520.1', '20200406.0', '20200304.0', '20200207.1', '20191217.0']
 Mappings:
   VersionMap:
     '20240109.0':
@@ -1056,9 +1048,13 @@ Resources:
       - SubDomainNameWithDot: !Ref SubDomainNameWithDot
         HostedZoneName: {'Fn::ImportValue': !Sub '${ParentZoneStack}-HostedZoneName'}
       ResourceRecords:
-      - !GetAtt 'NetworkInterface.PrimaryPrivateIpAddress'
+      - !Ref ElasticIP
       TTL: 60
       Type: A
+  ElasticIP:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
   NetworkInterface:
     Type: 'AWS::EC2::NetworkInterface'
     Properties:
@@ -1068,6 +1064,11 @@ Resources:
       - !If [HasClientSecurityGroup2, {'Fn::ImportValue': !Sub '${ParentClientStack2}-ClientSecurityGroup'}, !Ref 'AWS::NoValue']
       - !If [HasClientSecurityGroup3, {'Fn::ImportValue': !Sub '${ParentClientStack3}-ClientSecurityGroup'}, !Ref 'AWS::NoValue']
       SubnetId: {'Fn::ImportValue': !Sub '${ParentVPCStack}-${SubnetName}'}
+  EIPAssociation:
+    Type: 'AWS::EC2::EIPAssociation'
+    Properties:
+      AllocationId: !GetAtt 'ElasticIP.AllocationId'
+      NetworkInterfaceId: !Ref NetworkInterface
   Logs:
     Type: 'AWS::Logs::LogGroup'
     Properties:
@@ -1182,6 +1183,20 @@ Resources:
             - 'logs:DescribeLogStreams'
             - 'logs:DescribeLogGroups'
             Resource: !GetAtt 'Logs.Arn'
+      - PolicyName: s3
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Sid: "FullAccessToS3BucketsAndObjects"
+            Effect: "Allow"
+            Action: "s3:*"
+            Resource:
+              - "arn:aws:s3:::*backups*"
+              - "arn:aws:s3:::*backups*/*"
+          - Sid: "ListAllBuckets"
+            Effect: "Allow"
+            Action: "s3:ListAllMyBuckets"
+            Resource: "*"
   IAMPolicySSM:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -1224,6 +1239,7 @@ Resources:
           Resource:
           - !Sub 'arn:aws:iam::${AWS::AccountId}:user/*'
   VirtualMachine: # TODO make IMDSv2 required (waits for https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/655)
+    DependsOn: EIPAssociation
     Type: 'AWS::EC2::Instance'
     Metadata:
       'AWS::CloudFormation::Init':
@@ -1383,13 +1399,16 @@ Resources:
                   exit 1
                 fi
                 UnsaveUserName="$1"
-                UnsaveUserName=${UnsaveUserName//".plus."/"+"}
-                UnsaveUserName=${UnsaveUserName//".equal."/"="}
-                UnsaveUserName=${UnsaveUserName//".comma."/","}
-                UnsaveUserName=${UnsaveUserName//".at."/"@"}
-                aws iam list-ssh-public-keys --user-name "$UnsaveUserName" --query "SSHPublicKeys[?Status == 'Active'].[SSHPublicKeyId]" --output text | while read -r KeyId; do
-                  aws iam get-ssh-public-key --user-name "$UnsaveUserName" --ssh-public-key-id "$KeyId" --encoding SSH --query "SSHPublicKey.SSHPublicKeyBody" --output text
-                done
+                # Only proceed if the username starts with "ec2-"
+                if [[ $UnsaveUserName == ec2-* ]]; then
+                  UnsaveUserName=${UnsaveUserName//".plus."/"+"}
+                  UnsaveUserName=${UnsaveUserName//".equal."/"="}
+                  UnsaveUserName=${UnsaveUserName//".comma."/","}
+                  UnsaveUserName=${UnsaveUserName//".at."/"@"}
+                  aws iam list-ssh-public-keys --user-name "$UnsaveUserName" --query "SSHPublicKeys[?Status == 'Active'].[SSHPublicKeyId]" --output text | while read -r KeyId; do
+                    aws iam get-ssh-public-key --user-name "$UnsaveUserName" --ssh-public-key-id "$KeyId" --encoding SSH --query "SSHPublicKey.SSHPublicKeyBody" --output text
+                  done
+                fi
               mode: '000755'
               owner: root
               group: root
@@ -1397,20 +1416,22 @@ Resources:
               content: |
                 #!/bin/bash -e
                 aws iam list-users --query "Users[].[UserName]" --output text | while read User; do
-                  SaveUserName="$User"
-                  SaveUserName=${SaveUserName//"+"/".plus."}
-                  SaveUserName=${SaveUserName//"="/".equal."}
-                  SaveUserName=${SaveUserName//","/".comma."}
-                  SaveUserName=${SaveUserName//"@"/".at."}
-                  if [ "${#SaveUserName}" -le "32" ]; then
-                    if ! id -u "$SaveUserName" >/dev/null 2>&1; then
-                      #sudo will read each file in /etc/sudoers.d, skipping file names that end in ‘~’ or contain a ‘.’ character to avoid causing problems with package manager or editor temporary/backup files.
-                      SaveUserFileName=$(echo "$SaveUserName" | tr "." " ")
-                      /usr/sbin/useradd "$SaveUserName"
-                      echo "$SaveUserName ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$SaveUserFileName"
+                  # Only proceed if the username starts with "ec2-"
+                  if [[ $User == ec2-* ]]; then
+                    SaveUserName="$User"
+                    SaveUserName=${SaveUserName//"+"/".plus."}
+                    SaveUserName=${SaveUserName//"="/".equal."}
+                    SaveUserName=${SaveUserName//","/".comma."}
+                    SaveUserName=${SaveUserName//"@"/".at."}
+                    if [ "${#SaveUserName}" -le "32" ]; then
+                      if ! id -u "$SaveUserName" >/dev/null 2>&1; then
+                        SaveUserFileName=$(echo "$SaveUserName" | tr "." " ")
+                        /usr/sbin/useradd "$SaveUserName"
+                        echo "$SaveUserName ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$SaveUserFileName"
+                      fi
+                    else
+                      echo "Cannot import IAM user ${SaveUserName}. User name is longer than 32 characters."
                     fi
-                  else
-                    echo "Can not import IAM user ${SaveUserName}. User name is longer than 32 characters."
                   fi
                 done
               mode: '000755'
@@ -1456,8 +1477,18 @@ Resources:
                 [cfn-auto-reloader-hook]
                 triggers=post.update
                 path=Resources.VirtualMachine.Metadata.AWS::CloudFormation::Init
-                action=/opt/aws/bin/cfn-init --verbose --stack=${AWS::StackName} --region=${AWS::Region} --resource=VirtualMachine
+                action=cfn-init --verbose --stack=${AWS::StackName} --region=${AWS::Region} --resource=VirtualMachine
                 runas=root
+            '/lib/systemd/system/cfn-hup.service':
+                content: !Sub |
+                  [Unit]
+                  Description=cfn-hup daemon
+                  [Service]
+                  Type=simple
+                  ExecStart=cfn-hup
+                  Restart=always
+                  [Install]
+                  WantedBy=multi-user.target
           services:
             sysvinit:
               cfn-hup:
@@ -1466,6 +1497,7 @@ Resources:
                 files:
                 - '/etc/cfn/cfn-hup.conf'
                 - '/etc/cfn/hooks.d/cfn-auto-reloader.conf'
+                - '/lib/systemd/system/cfn-hup.service'
               amazon-ssm-agent:
                 enabled: true
                 ensureRunning: true
@@ -1475,7 +1507,7 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: !If [HasKeyName, !Ref KeyName, !Ref 'AWS::NoValue']
       BlockDeviceMappings:
-      - DeviceName: '/dev/xvda'
+      - DeviceName: '/dev/sda1'
         Ebs:
           Encrypted: !If [HasKmsKey, true, !Ref 'AWS::NoValue']
           KmsKeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyArn'}, !Ref 'AWS::NoValue']
@@ -1487,17 +1519,111 @@ Resources:
       UserData:
         'Fn::Base64': !Sub |
           #!/bin/bash -ex
-          trap '/opt/aws/bin/cfn-signal -e 1 --region ${AWS::Region} --stack ${AWS::StackName} --resource VirtualMachine' ERR
+          # Construct the full domain name
+          HOSTNAME="${SubDomainNameWithDot}${HostedZoneName}"
+          if [ -n "$HOSTNAME" ]; then
+            sudo hostnamectl set-hostname $HOSTNAME
+            echo $HOSTNAME > /etc/hostname
+            echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
+          else
+            echo "Hostname could not be set because it is empty"
+          fi
+
+          # Ensure the EPEL repository is configured correctly for RHEL 9
+          sudo subscription-manager repos --enable "codeready-builder-for-rhel-9-$(uname -m)-rpms"
+          sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y
+
+          # Update the system
+          sudo dnf update -y
+
+          # Install necessary packages
+          sudo dnf install htop nano scap-security-guide dnf-automatic haveged firewalld dnf-utils audit audit-libs policycoreutils-python-utils perl wget zip -y
+
+          # Download and install AWS CLI v2
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          sudo rm -rf aws awscliv2.zip
+
+          # Add /usr/local/bin to the PATH in root's .bashrc
+          sudo sh -c 'echo "export PATH=\$PATH:/usr/local/bin" >> /root/.bashrc'
+
+          # Uncomment the wheel group line to allow members to execute any command without a password
+          sudo cp /etc/sudoers /etc/sudoers.org
+          sudo sed -i '/^# %wheel\s\+ALL=(ALL)\s\+NOPASSWD: ALL/s/^# //' /etc/sudoers
+
+          # Create a swap file
+          sudo dd if=/dev/zero of=/var/swapfile bs=200M count=40
+          sudo chmod 600 /var/swapfile
+          sudo mkswap /var/swapfile
+          sudo swapon /var/swapfile
+          echo "/var/swapfile   none    swap    sw      0 0" | sudo tee -a /etc/fstab
+
+          # Configure automatic updates
+          sudo sed -i 's/apply_updates = no/apply_updates = yes/' /etc/dnf/automatic.conf
+
+          # Enable and start necessary services
+          sudo systemctl enable --now haveged auditd dnf-automatic.timer
+
+          # Install Amazon SSM Agent
+          sudo dnf install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+
+          # Install Python 3 pip
+          sudo dnf install python3-pip -y
+
+          # Remove unnecessary packages
+          sudo dnf autoremove -y
+
+          # Install AWS CloudFormation helper scripts
+          sudo pip3 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz
+          # Create the SELinux policy module file
+          sudo tee /tmp/my_sshd.te > /dev/null <<'EOF'
+          module my_sshd 1.0;
+
+          require {
+            type chronyd_keys_t;
+            type etc_aliases_t;
+            type sshd_t;
+            type http_port_t;
+            type system_cron_spool_t;
+            type adjtime_t;
+            class file getattr;
+            class tcp_socket name_connect;
+          }
+
+          #============= sshd_t ==============
+          allow sshd_t adjtime_t:file getattr;
+          allow sshd_t chronyd_keys_t:file getattr;
+          allow sshd_t etc_aliases_t:file getattr;
+
+          #!!!! This avc can be allowed using one of the these booleans:
+          #     authlogin_yubikey, nis_enabled
+          allow sshd_t http_port_t:tcp_socket name_connect;
+          allow sshd_t system_cron_spool_t:file getattr;
+          EOF
+
+          # Navigate to the temporary directory
+          cd /tmp
+
+          # Compile the SELinux policy module
+          checkmodule -M -m -o my_sshd.mod my_sshd.te
+          semodule_package -o my_sshd.pp -m my_sshd.mod
+
+          # Load the SELinux policy module
+          sudo semodule -i my_sshd.pp
+
+          # AWS CloudFormation signaling
+          trap 'cfn-signal -e 1 --region ${AWS::Region} --stack ${AWS::StackName} --resource VirtualMachine' ERR
           ${UserData}
-          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource VirtualMachine --region ${AWS::Region}
-          /opt/aws/bin/cfn-signal -e 0 --region ${AWS::Region} --stack ${AWS::StackName} --resource VirtualMachine
+          cfn-init -v --stack ${AWS::StackName} --resource VirtualMachine --region ${AWS::Region}
+          cfn-signal -e 0 --region ${AWS::Region} --stack ${AWS::StackName} --resource VirtualMachine
       Tags:
       - Key: Name
         Value: !Ref Name
     CreationPolicy:
       ResourceSignal:
         Count: 1
-        Timeout: PT10M
+        Timeout: PT20M
   RecoveryAlarm:
     Type: 'AWS::CloudWatch::Alarm'
     Properties:
@@ -1691,7 +1817,7 @@ Resources:
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
-    Value: 'ec2/al2-mutable-private'
+    Value: 'ec2/al2-mutable-public-redhat'
   TemplateVersion:
     Description: 'cloudonaut.io template version.'
     Value: '__VERSION__'
@@ -1703,6 +1829,11 @@ Outputs:
     Value: !Ref VirtualMachine
     Export:
       Name: !Sub '${AWS::StackName}-InstanceId'
+  PublicIPAddress:
+    Description: 'The public IP address of the EC2 instance.'
+    Value: !Ref ElasticIP
+    Export:
+      Name: !Sub '${AWS::StackName}-IPAddress'
   PrivateIPAddress:
     Description: 'The private IP address of the EC2 instance.'
     Value: !GetAtt 'NetworkInterface.PrimaryPrivateIpAddress'
