@@ -1193,6 +1193,10 @@ Resources:
             Resource:
               - "arn:aws:s3:::*backups*"
               - "arn:aws:s3:::*backups*/*"
+          - Sid: "ListAllBuckets"
+            Effect: "Allow"
+            Action: "s3:ListAllMyBuckets"
+            Resource: "*"
   IAMPolicySSM:
     Type: 'AWS::IAM::Policy'
     Properties:
