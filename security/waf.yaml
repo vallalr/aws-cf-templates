@@ -24,12 +24,19 @@ Metadata:
       - RateLimit
       - RateLimitEffect
       - ReputationListEffect
+      - AnonymousIpListEffect
+      - AnonymousIpListExcludeRule1
       - BotControlEffect
       - BotControlExcludeRule1
       - BotControlExcludeRule2
       - BotControlExcludeRule3
       - BotControlExcludeRule4
       - BotControlExcludeRule5
+      - CustomRuleEffect
+      - GeoLocationRestrictionEffect
+      - AllowedCountryCodes
+      - TrustedIPAddresses
+      - BlockedIPAddresses
 Parameters:
   Scope:
     Description: 'Specify wether WAF shall be used with CloudFront (us-east-1 only!) or regional (ALB, API Gateway, and AppSync).'
@@ -60,6 +67,18 @@ Parameters:
     - 'Disable'
     - 'Block'
     - 'Count'
+  AnonymousIpListEffect:
+    Description: 'Block or count requests from anonymous IP addresses. Alternatively, disable anonymous IP list at all.'
+    Type: String
+    Default: 'Disable'
+    AllowedValues:
+    - 'Disable'
+    - 'Block'
+    - 'Count'
+  AnonymousIpListExcludeRule1:
+    Description: 'The rule whose actions are set to COUNT by the web ACL. This effectively excludes the rule from acting on web requests. (Valid rule names: https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-list.html#aws-managed-rule-groups-anonymous-ip)'
+    Type: String
+    Default: ''
   BotControlEffect:
     Description: 'Block or count requests from bots. Alterantively, disable bot control at all.'
     Type: String
@@ -88,11 +107,42 @@ Parameters:
     Description: 'The rule whose actions are set to COUNT by the web ACL. This effectively excludes the rule from acting on web requests. (Valid rule names: https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-list.html#aws-managed-rule-groups-bot)'
     Type: String
     Default: ''
+  CustomRuleEffect:
+    Description: 'Block or count requests that match the custom rule. Alternatively, disable the custom rule at all.'
+    Type: String
+    Default: 'Disable'
+    AllowedValues:
+    - 'Disable'
+    - 'Block'
+    - 'Count'
+  GeoLocationRestrictionEffect:
+    Type: String
+    Description: 'Action to take for requests not from allowed countries'
+    Default: 'Disable'
+    AllowedValues:
+      - 'Disable'
+      - 'Block'
+      - 'Count'
+  AllowedCountryCodes:
+    Description: 'Comma-separated list of allowed country codes (e.g., IN,DE,DK)'
+    Type: CommaDelimitedList
+    Default: 'AD,AL,AT,BA,BE,BG,BY,CH,CY,CZ,DE,DK,EE,ES,FI,FR,GB,GR,HR,HU,IE,IS,IT,LI,LT,LU,LV,MC,MD,ME,MK,MT,NL,NO,PL,PT,RO,RS,SE,SI,SK,SM,UA,VA,GL,FO,IN,PK'
+  TrustedIPAddresses:
+    Description: 'Comma-separated list of trusted IP addresses or CIDR ranges (e.g., 192.168.1.1/32, 10.0.0.0/8)'
+    Type: CommaDelimitedList
+    Default: ''
+  BlockedIPAddresses:
+    Description: 'Comma-separated list of IP addresses or CIDR ranges to block (e.g., 192.168.1.1/32, 10.0.0.0/8)'
+    Type: CommaDelimitedList
+    Default: ''
 Conditions:
   EnableRateLimit: !Not [!Equals [!Ref RateLimitEffect, 'Disable']]
   BlockRateLimit: !Equals [!Ref RateLimitEffect, 'Block']
   EnableReputationList: !Not [!Equals [!Ref ReputationListEffect, 'Disable']]
   BlockReputationList: !Equals [!Ref ReputationListEffect, 'Block']
+  EnableAnonymousIpList: !Not [!Equals [!Ref AnonymousIpListEffect, 'Disable']]
+  BlockAnonymousIpList: !Equals [!Ref AnonymousIpListEffect, 'Block']
+  HasAnonymousIpListExcludeRule1: !Not [!Equals [!Ref AnonymousIpListExcludeRule1, '']]
   EnableBotControl: !Not [!Equals [!Ref BotControlEffect, 'Disable']]
   BlockBotControl: !Equals [!Ref BotControlEffect, 'Block']
   HasBotControlExcludeRule1: !Not [!Equals [!Ref BotControlExcludeRule1, '']]
@@ -100,7 +150,31 @@ Conditions:
   HasBotControlExcludeRule3: !Not [!Equals [!Ref BotControlExcludeRule3, '']]
   HasBotControlExcludeRule4: !Not [!Equals [!Ref BotControlExcludeRule4, '']]
   HasBotControlExcludeRule5: !Not [!Equals [!Ref BotControlExcludeRule5, '']]
+  EnableCustomRule: !Not [!Equals [!Ref CustomRuleEffect, 'Disable']]
+  BlockCustomRule: !Equals [!Ref CustomRuleEffect, 'Block']
+  EnableGeoLocationRestriction: !Not [!Equals [!Ref GeoLocationRestrictionEffect, 'Disable']]
+  BlockGeoLocationRestriction: !Equals [!Ref GeoLocationRestrictionEffect, 'Block']
+  HasTrustedIPAddresses: !Not [!Equals [!Join ['', !Ref TrustedIPAddresses], '']]
+  HasBlockedIPAddresses: !Not [!Equals [!Join ['', !Ref BlockedIPAddresses], '']]
 Resources:
+  TrustedIPSet:
+    Condition: HasTrustedIPAddresses
+    Type: AWS::WAFv2::IPSet
+    Properties:
+      Name: TrustedIPAddresses
+      Addresses: !Ref TrustedIPAddresses
+      IPAddressVersion: IPV4
+      Scope: REGIONAL
+      Description: List of trusted IP addresses
+  BlockedIPSet:
+    Condition: HasBlockedIPAddresses
+    Type: AWS::WAFv2::IPSet
+    Properties:
+      Name: BlockedIPAddresses
+      Addresses: !Ref BlockedIPAddresses
+      IPAddressVersion: IPV4
+      Scope: REGIONAL
+      Description: List of blocked IP addresses
   WebACL:
     Type: 'AWS::WAFv2::WebACL'
     Properties:
@@ -110,9 +184,55 @@ Resources:
       Name: !Ref 'AWS::StackName'
       Rules:
       - !If
+        - HasTrustedIPAddresses
+        - Name: TrustedIPAddresses
+          Priority: 0
+          Action:
+            Allow: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: TrustedIPAddresses
+          Statement:
+            IPSetReferenceStatement:
+              ARN: !GetAtt TrustedIPSet.Arn
+        - !Ref 'AWS::NoValue'
+      - !If
+        - HasBlockedIPAddresses
+        - Name: BlockedIPAddresses
+          Priority: 1
+          Action:
+            Block: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: BlockedIPAddresses
+          Statement:
+            IPSetReferenceStatement:
+              ARN: !GetAtt BlockedIPSet.Arn
+        - !Ref 'AWS::NoValue'
+      - !If
+        - EnableGeoLocationRestriction
+        - Name: GeoLocationRestriction
+          Priority: 11
+          Action: !If
+            - BlockGeoLocationRestriction
+            - Block: {}
+            - Count: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: GeoLocationRestriction
+          Statement:
+            NotStatement:
+              Statement:
+                GeoMatchStatement:
+                  CountryCodes: !Ref AllowedCountryCodes
+        - !Ref 'AWS::NoValue'
+      - !If
         - EnableReputationList
         - Name: AWSReputationList
-          Priority: 1
+          Priority: 12
           OverrideAction: !If
           - BlockReputationList
           - None: {}
@@ -127,13 +247,35 @@ Resources:
               Name: AWSManagedRulesAmazonIpReputationList
         - !Ref 'AWS::NoValue'
       - !If
+        - EnableAnonymousIpList
+        - Name: AWSAnonymousIpList
+          Priority: 13
+          OverrideAction: !If
+          - BlockAnonymousIpList
+          - None: {}
+          - Count: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AWSAnonymousIpList
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesAnonymousIpList
+              ExcludedRules:
+              - !If [HasAnonymousIpListExcludeRule1, {Name: !Ref AnonymousIpListExcludeRule1}, !Ref 'AWS::NoValue']
+        - !Ref 'AWS::NoValue'
+      - !If
         - EnableRateLimit
         - Name: RateLimit
-          Priority: 2
+          Priority: 14
           Statement:
             RateBasedStatement:
               Limit: !Ref RateLimit
-              AggregateKeyType: IP
+              AggregateKeyType: FORWARDED_IP
+              ForwardedIPConfig:
+                HeaderName: X-Forwarded-For
+                FallbackBehavior: MATCH
           Action: !If
           - BlockRateLimit
           - Block: {}
@@ -146,7 +288,7 @@ Resources:
       - !If
         - EnableBotControl
         - Name: AWSBotControl
-          Priority: 3
+          Priority: 15
           OverrideAction: !If
           - BlockBotControl
           - None: {}
@@ -166,6 +308,59 @@ Resources:
               - !If [HasBotControlExcludeRule4, {Name: !Ref BotControlExcludeRule4}, !Ref 'AWS::NoValue']
               - !If [HasBotControlExcludeRule5, {Name: !Ref BotControlExcludeRule5}, !Ref 'AWS::NoValue']
         - !Ref 'AWS::NoValue'
+      - !If
+        - EnableCustomRule
+        - Name: CustomRule
+          Priority: 16
+          Action: !If
+          - BlockCustomRule
+          - Block: {}
+          - Count: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: CustomRule
+          Statement:
+            AndStatement:
+              Statements:
+                - LabelMatchStatement:
+                    Scope: LABEL
+                    Key: awswaf:managed:aws:bot-control:signal:bot_detected
+                - OrStatement:
+                    Statements:
+                      - AndStatement:
+                          Statements:
+                            - NotStatement:
+                                Statement:
+                                  ByteMatchStatement:
+                                    SearchString: Amazon CloudFront
+                                    FieldToMatch:
+                                      SingleHeader:
+                                        Name: user-agent
+                                    TextTransformations:
+                                      - Priority: 0
+                                        Type: NONE
+                                    PositionalConstraint: EXACTLY
+                            - LabelMatchStatement:
+                                Scope: LABEL
+                                Key: awswaf:managed:aws:bot-control:signal:non_browser_user_agent
+                      - AndStatement:
+                          Statements:
+                            - NotStatement:
+                                Statement:
+                                  ByteMatchStatement:
+                                    SearchString: okhttp
+                                    FieldToMatch:
+                                      SingleHeader:
+                                        Name: user-agent
+                                    TextTransformations:
+                                      - Priority: 0
+                                        Type: NONE
+                                    PositionalConstraint: CONTAINS
+                            - LabelMatchStatement:
+                                Scope: LABEL
+                                Key: awswaf:managed:aws:bot-control:bot:category:http_library
+        - !Ref 'AWS::NoValue'
       Scope: !Ref Scope
       VisibilityConfig:
         CloudWatchMetricsEnabled: true
@@ -174,7 +369,7 @@ Resources:
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
-    Value: 'security/waf-legacy'
+    Value: 'security/waf'
   TemplateVersion:
     Description: 'cloudonaut.io template version.'
     Value: '__VERSION__'
