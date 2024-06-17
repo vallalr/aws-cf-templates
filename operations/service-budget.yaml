@@ -1,3 +1,4 @@
+---
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Create a budget for a specific AWS service, a cloudonaut.io template'
 Metadata:
