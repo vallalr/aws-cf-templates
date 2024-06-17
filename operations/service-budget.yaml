@@ -104,7 +104,7 @@ Resources:
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
-    Value: 'operations/alert'
+    Value: 'operations/service-budget'
   TemplateVersion:
     Description: 'cloudonaut.io template version.'
     Value: '__VERSION__'
