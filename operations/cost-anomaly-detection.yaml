@@ -1,0 +1,57 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create a cost anomaly detection monitor and subscription for AWS service, a cloudonaut.io template'
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Parent Alert Stack
+        Parameters:
+          - ParentAlertStack
+      - Label:
+          default: Service Anomaly Detection
+        Parameters:
+          - Threshold
+Parameters:
+  ParentAlertStack:
+    Type: String
+    Description: The name of the parent alert stack
+  Threshold:
+    Type: Number
+    Description: The threshold amount for anomaly detection (in USD)
+    Default: 100
+Resources:
+  CostAnomalyMonitor:
+    Type: AWS::CE::AnomalyMonitor
+    Properties:
+      MonitorName: CostAnomalyMonitor
+      MonitorType: DIMENSIONAL # Options are DIMENSIONAL or CUSTOM
+      MonitorDimension: SERVICE # Only applicable if MonitorType is DIMENSIONAL
+  CostAnomalySubscription:
+    Type: AWS::CE::AnomalySubscription
+    Properties:
+      SubscriptionName: CostAnomalySubscription
+      Threshold: !Ref Threshold
+      Frequency: IMMEDIATE
+      MonitorArnList:
+        - !Ref CostAnomalyMonitor
+      Subscribers:
+        - Address: !ImportValue
+            Fn::Sub: ${ParentAlertStack}-TopicARN
+          Type: SNS
+Outputs:
+  TemplateID:
+    Description: cloudonaut.io template id.
+    Value: operations/cost-anomaly-detection
+  TemplateVersion:
+    Description: cloudonaut.io template version.
+    Value: __VERSION__
+  StackName:
+    Description: Stack name.
+    Value: !Sub ${AWS::StackName}
+  AnomalyMonitorArn:
+    Description: ARN of the Cost Anomaly Monitor
+    Value: !GetAtt CostAnomalyMonitor.MonitorArn
+  AnomalySubscriptionArn:
+    Description: ARN of the Cost Anomaly Subscription
+    Value: !GetAtt CostAnomalySubscription.SubscriptionArn

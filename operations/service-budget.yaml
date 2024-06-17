@@ -1,0 +1,143 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create a budget for a specific AWS service, a cloudonaut.io template'
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Parent Alert Stack
+        Parameters:
+          - ParentAlertStack
+      - Label:
+          default: Service Budget
+        Parameters:
+          - ServiceName
+          - BudgetLimit
+          - NotificationThreshold
+          - NotificationThreshold2
+          - TimeUnit
+Parameters:
+  ParentAlertStack:
+    Type: String
+    Description: The name of the parent alert stack
+  ServiceName:
+    Type: String
+    Description: The name of the AWS service for which to set up the budget
+    AllowedValues:
+      - AWS Amplify
+      - Amazon CloudFront
+      - AWS CloudShell
+      - AWS CloudTrail
+      - AmazonCloudWatch
+      - AWS Config
+      - Amazon DynamoDB
+      - Amazon EC2 Container Registry (ECR)
+      - Amazon Elastic Load Balancing
+      - Amazon Elastic Compute Cloud - Compute
+      - Amazon Elastic Block Store
+      - Amazon Elastic Container Service
+      - Amazon ElastiCache
+      - AWS Glue
+      - AWS Key Management Service
+      - AWS Lambda
+      - Amazon Location Service
+      - AWS Migration Hub Refactor Spaces
+      - Amazon Relational Database Service
+      - Amazon Route 53
+      - Amazon Simple Storage Service
+      - AWS Secrets Manager
+      - AWS Service Catalog
+      - Amazon Simple Email Service
+      - Amazon Simple Notification Service
+      - Amazon Simple Queue Service
+      - AWS Step Functions
+      - Amazon Virtual Private Cloud
+      - AWS WAF
+      - Account
+    Default: Account
+  BudgetLimit:
+    Type: Number
+    Description: The budget limit amount (in USD)
+    Default: 100
+  NotificationThreshold:
+    Type: Number
+    Description: The first percentage threshold for sending budget notifications
+    Default: 50
+    MinValue: 1
+    MaxValue: 100
+  NotificationThreshold2:
+    Type: Number
+    Description: The second percentage threshold for sending budget notifications
+    Default: 80
+    MinValue: 1
+    MaxValue: 100
+  TimeUnit:
+    Type: String
+    Description: The time unit for the budget
+    AllowedValues:
+      - DAILY
+      - MONTHLY
+      - QUARTERLY
+      - ANNUALLY
+    Default: MONTHLY
+Conditions:
+  ServiceNameProvided: !Not [!Equals [!Ref ServiceName, "Account"]]
+Resources:
+  ServiceBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Sub '${ServiceName}'
+        BudgetType: COST
+        TimeUnit: !Ref TimeUnit
+        BudgetLimit:
+          Amount: !Ref BudgetLimit
+          Unit: USD
+        CostTypes:
+          IncludeTax: true
+          IncludeSubscription: true
+          UseBlended: false
+          IncludeUpfront: true
+          IncludeSupport: true
+          IncludeDiscount: true
+          IncludeRecurring: true
+          IncludeCredit: false
+          IncludeRefund: false
+        CostFilters:
+          Fn::If:
+            - ServiceNameProvided
+            - Service:
+                - !Ref ServiceName
+            - !Ref "AWS::NoValue"
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: !Ref NotificationThreshold
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: SNS
+              Address: !ImportValue
+                'Fn::Sub': '${ParentAlertStack}-TopicARN'
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: ACTUAL
+            Threshold: !Ref NotificationThreshold2
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: SNS
+              Address: !ImportValue
+                'Fn::Sub': '${ParentAlertStack}-TopicARN'
+Outputs:
+  TemplateID:
+    Description: 'cloudonaut.io template id.'
+    Value: 'operations/service-budget'
+  TemplateVersion:
+    Description: 'cloudonaut.io template version.'
+    Value: '__VERSION__'
+  StackName:
+    Description: 'Stack name.'
+    Value: !Sub '${AWS::StackName}'
+  BudgetName:
+    Description: The name of the created budget
+    Value: !Ref ServiceBudget
