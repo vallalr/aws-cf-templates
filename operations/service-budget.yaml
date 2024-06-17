@@ -1,4 +1,3 @@
----
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Create a budget for a specific AWS service, a cloudonaut.io template'
 Metadata:
@@ -15,6 +14,7 @@ Metadata:
           - BudgetLimit
           - NotificationThreshold
           - NotificationThreshold2
+          - TimeUnit
 Parameters:
   ParentAlertStack:
     Type: String
@@ -23,38 +23,37 @@ Parameters:
     Type: String
     Description: The name of the AWS service for which to set up the budget
     AllowedValues:
-      - Amplify
-      - CloudFront
-      - CloudShell
-      - CloudTrail
-      - CloudWatch
-      - Config
-      - DynamoDB
-      - EC2ContainerRegistry
-      - ElasticLoadBalancing
-      - EC2Instances
-      - EC2Other
-      - ElasticContainerService
-      - ElastiCache
-      - Glue
-      - KeyManagementService
-      - Lambda
-      - LocationService
-      - MigrationHubRefactorSpaces
-      - RDS
-      - Route53
-      - S3
-      - SecretsManager
-      - ServiceCatalog
-      - SES
-      - SNS
-      - SQS
-      - StepFunctions
-      - Support
-      - SWF
-      - Tax
-      - VPC
-      - WAF
+      - AWS Amplify
+      - Amazon CloudFront
+      - AWS CloudShell
+      - AWS CloudTrail
+      - AmazonCloudWatch
+      - AWS Config
+      - Amazon DynamoDB
+      - Amazon EC2 Container Registry (ECR)
+      - Amazon Elastic Load Balancing
+      - Amazon Elastic Compute Cloud - Compute
+      - Amazon Elastic Block Store
+      - Amazon Elastic Container Service
+      - Amazon ElastiCache
+      - AWS Glue
+      - AWS Key Management Service
+      - AWS Lambda
+      - Amazon Location Service
+      - AWS Migration Hub Refactor Spaces
+      - Amazon Relational Database Service
+      - Amazon Route 53
+      - Amazon Simple Storage Service
+      - AWS Secrets Manager
+      - AWS Service Catalog
+      - Amazon Simple Email Service
+      - Amazon Simple Notification Service
+      - Amazon Simple Queue Service
+      - AWS Step Functions
+      - Amazon Virtual Private Cloud
+      - AWS WAF
+      - Account
+    Default: Account
   BudgetLimit:
     Type: Number
     Description: The budget limit amount (in USD)
@@ -71,19 +70,44 @@ Parameters:
     Default: 90
     MinValue: 1
     MaxValue: 100
+  TimeUnit:
+    Type: String
+    Description: The time unit for the budget
+    AllowedValues:
+      - DAILY
+      - MONTHLY
+      - QUARTERLY
+      - ANNUALLY
+    Default: MONTHLY
+Conditions:
+  ServiceNameProvided: !Not [!Equals [!Ref ServiceName, "Account"]]
 Resources:
   ServiceBudget:
     Type: AWS::Budgets::Budget
     Properties:
-      BudgetName: !Ref 'AWS::StackName'
       Budget:
-        BudgetType: USAGE
-        TimeUnit: MONTHLY
+        BudgetName: !Sub '${ServiceName}-budget'
+        BudgetType: COST
+        TimeUnit: !Ref TimeUnit
         BudgetLimit:
           Amount: !Ref BudgetLimit
           Unit: USD
+        CostTypes:
+          IncludeTax: true
+          IncludeSubscription: true
+          UseBlended: false
+          IncludeUpfront: true
+          IncludeSupport: true
+          IncludeDiscount: true
+          IncludeRecurring: true
+          IncludeCredit: false
+          IncludeRefund: false
         CostFilters:
-          - Service: !Ref ServiceName
+          Fn::If:
+            - ServiceNameProvided
+            - Service:
+                - !Ref ServiceName
+            - !Ref "AWS::NoValue"
       NotificationsWithSubscribers:
         - Notification:
             ComparisonOperator: GREATER_THAN
@@ -91,16 +115,18 @@ Resources:
             Threshold: !Ref NotificationThreshold
             ThresholdType: PERCENTAGE
           Subscribers:
-            - !ImportValue
-              'Fn::Sub': '${ParentAlertStack}-TopicARN'
+            - SubscriptionType: SNS
+              Address: !ImportValue
+                'Fn::Sub': '${ParentAlertStack}-TopicARN'
         - Notification:
             ComparisonOperator: GREATER_THAN
             NotificationType: ACTUAL
             Threshold: !Ref NotificationThreshold2
             ThresholdType: PERCENTAGE
           Subscribers:
-            - !ImportValue
-              'Fn::Sub': '${ParentAlertStack}-TopicARN'
+            - SubscriptionType: SNS
+              Address: !ImportValue
+                'Fn::Sub': '${ParentAlertStack}-TopicARN'
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
