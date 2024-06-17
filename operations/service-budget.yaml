@@ -61,13 +61,13 @@ Parameters:
   NotificationThreshold:
     Type: Number
     Description: The first percentage threshold for sending budget notifications
-    Default: 80
+    Default: 50
     MinValue: 1
     MaxValue: 100
   NotificationThreshold2:
     Type: Number
     Description: The second percentage threshold for sending budget notifications
-    Default: 90
+    Default: 80
     MinValue: 1
     MaxValue: 100
   TimeUnit:
@@ -86,7 +86,7 @@ Resources:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
-        BudgetName: !Sub '${ServiceName}-budget'
+        BudgetName: !Sub '${ServiceName}'
         BudgetType: COST
         TimeUnit: !Ref TimeUnit
         BudgetLimit:
