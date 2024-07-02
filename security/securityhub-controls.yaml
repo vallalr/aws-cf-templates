@@ -59,6 +59,7 @@ Resources:
   LambdaRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub '${AWS::StackName}-LambdaRole'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -68,7 +69,7 @@ Resources:
           Action: 'sts:AssumeRole'
       PermissionsBoundary: !If [HasPermissionsBoundary, !Ref PermissionsBoundary, !Ref 'AWS::NoValue']
       Policies:
-      - PolicyName: iam
+      - PolicyName: !Sub '${AWS::StackName}-iam-policy'
         PolicyDocument:
           Statement:
           - Effect: Allow
@@ -80,7 +81,7 @@ Resources:
     Properties:
       Roles:
       - !Ref LambdaRole
-      PolicyName: lambda
+      PolicyName: !Sub '${AWS::StackName}-lambda-policy'
       PolicyDocument:
         Statement:
         - Effect: Allow
@@ -91,6 +92,7 @@ Resources:
   LambdaFunction: # needs no monitoring because it is used as a custom resource
     Type: 'AWS::Lambda::Function'
     Properties:
+      FunctionName: !Sub '${AWS::StackName}-LambdaFunction'
       Code:
         ZipFile: |
           const response = require('cfn-response');
@@ -160,7 +162,7 @@ Resources:
   LambdaLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
-      LogGroupName: !Sub '/aws/lambda/${LambdaFunction}'
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-LambdaLogGroup'
       RetentionInDays: !Ref LogsRetentionInDays
   CIS120:
     Type: 'Custom::CIS120'
