@@ -79,9 +79,9 @@ Resources:
   LambdaPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: !Sub '${AWS::StackName}-lambda-policy'
       Roles:
       - !Ref LambdaRole
+      PolicyName: !Sub '${AWS::StackName}-lambda-policy'
       PolicyDocument:
         Statement:
         - Effect: Allow
