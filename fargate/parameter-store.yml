@@ -1,0 +1,954 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template to create up to 30 parameters in AWS Systems Manager Parameter Store with customizable names, types, and values, a cloudonaut.io template'
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Label:
+          default: 'Parent Stacks'
+        Parameters:
+          - ParentKmsKeyStack
+      - Label:
+          default: 'Parameter Settings'
+        Parameters:
+          - Parameter1Name
+          - Parameter1Type
+          - Parameter1Value
+          - Parameter2Name
+          - Parameter2Type
+          - Parameter2Value
+          - Parameter3Name
+          - Parameter3Type
+          - Parameter3Value
+          - Parameter4Name
+          - Parameter4Type
+          - Parameter4Value
+          - Parameter5Name
+          - Parameter5Type
+          - Parameter5Value
+          - Parameter6Name
+          - Parameter6Type
+          - Parameter6Value
+          - Parameter7Name
+          - Parameter7Type
+          - Parameter7Value
+          - Parameter8Name
+          - Parameter8Type
+          - Parameter8Value
+          - Parameter9Name
+          - Parameter9Type
+          - Parameter9Value
+          - Parameter10Name
+          - Parameter10Type
+          - Parameter10Value
+          - Parameter11Name
+          - Parameter11Type
+          - Parameter11Value
+          - Parameter12Name
+          - Parameter12Type
+          - Parameter12Value
+          - Parameter13Name
+          - Parameter13Type
+          - Parameter13Value
+          - Parameter14Name
+          - Parameter14Type
+          - Parameter14Value
+          - Parameter15Name
+          - Parameter15Type
+          - Parameter15Value
+          - Parameter16Name
+          - Parameter16Type
+          - Parameter16Value
+          - Parameter17Name
+          - Parameter17Type
+          - Parameter17Value
+          - Parameter18Name
+          - Parameter18Type
+          - Parameter18Value
+          - Parameter19Name
+          - Parameter19Type
+          - Parameter19Value
+          - Parameter20Name
+          - Parameter20Type
+          - Parameter20Value
+          - Parameter21Name
+          - Parameter21Type
+          - Parameter21Value
+          - Parameter22Name
+          - Parameter22Type
+          - Parameter22Value
+          - Parameter23Name
+          - Parameter23Type
+          - Parameter23Value
+          - Parameter24Name
+          - Parameter24Type
+          - Parameter24Value
+          - Parameter25Name
+          - Parameter25Type
+          - Parameter25Value
+          - Parameter26Name
+          - Parameter26Type
+          - Parameter26Value
+          - Parameter27Name
+          - Parameter27Type
+          - Parameter27Value
+          - Parameter28Name
+          - Parameter28Type
+          - Parameter28Value
+          - Parameter29Name
+          - Parameter29Type
+          - Parameter29Value
+          - Parameter30Name
+          - Parameter30Type
+          - Parameter30Value
+Parameters:
+  ParentKmsKeyStack:
+    Description: 'Optional Stack name of parent KMS key stack based on security/kms-key.yaml template (If you do not specify this value, then SSM Parameter Store defaults to the AWS account CMK).'
+    Type: String
+    Default: ''
+  # Define parameters for each SSM parameter
+  Parameter1Name:
+    Description: 'Name of the first parameter'
+    Type: String
+    Default: ''
+  Parameter1Type:
+    Description: 'Type of the first parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter1Value:
+    Description: 'Value of the first parameter'
+    Type: String
+    Default: ''
+  Parameter2Name:
+    Description: 'Name of the second parameter'
+    Type: String
+    Default: ''
+  Parameter2Type:
+    Description: 'Type of the second parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter2Value:
+    Description: 'Value of the second parameter'
+    Type: String
+    Default: ''
+  Parameter3Name:
+    Description: 'Name of the third parameter'
+    Type: String
+    Default: ''
+  Parameter3Type:
+    Description: 'Type of the third parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter3Value:
+    Description: 'Value of the third parameter'
+    Type: String
+    Default: ''
+  Parameter4Name:
+    Description: 'Name of the fourth parameter'
+    Type: String
+    Default: ''
+  Parameter4Type:
+    Description: 'Type of the fourth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter4Value:
+    Description: 'Value of the fourth parameter'
+    Type: String
+    Default: ''
+  Parameter5Name:
+    Description: 'Name of the fifth parameter'
+    Type: String
+    Default: ''
+  Parameter5Type:
+    Description: 'Type of the fifth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter5Value:
+    Description: 'Value of the fifth parameter'
+    Type: String
+    Default: ''
+  Parameter6Name:
+    Description: 'Name of the sixth parameter'
+    Type: String
+    Default: ''
+  Parameter6Type:
+    Description: 'Type of the sixth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter6Value:
+    Description: 'Value of the sixth parameter'
+    Type: String
+    Default: ''
+  Parameter7Name:
+    Description: 'Name of the seventh parameter'
+    Type: String
+    Default: ''
+  Parameter7Type:
+    Description: 'Type of the seventh parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter7Value:
+    Description: 'Value of the seventh parameter'
+    Type: String
+    Default: ''
+  Parameter8Name:
+    Description: 'Name of the eighth parameter'
+    Type: String
+    Default: ''
+  Parameter8Type:
+    Description: 'Type of the eighth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter8Value:
+    Description: 'Value of the eighth parameter'
+    Type: String
+    Default: ''
+  Parameter9Name:
+    Description: 'Name of the ninth parameter'
+    Type: String
+    Default: ''
+  Parameter9Type:
+    Description: 'Type of the ninth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter9Value:
+    Description: 'Value of the ninth parameter'
+    Type: String
+    Default: ''
+  Parameter10Name:
+    Description: 'Name of the tenth parameter'
+    Type: String
+    Default: ''
+  Parameter10Type:
+    Description: 'Type of the tenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter10Value:
+    Description: 'Value of the tenth parameter'
+    Type: String
+    Default: ''
+  Parameter11Name:
+    Description: 'Name of the eleventh parameter'
+    Type: String
+    Default: ''
+  Parameter11Type:
+    Description: 'Type of the eleventh parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter11Value:
+    Description: 'Value of the eleventh parameter'
+    Type: String
+    Default: ''
+  Parameter12Name:
+    Description: 'Name of the twelfth parameter'
+    Type: String
+    Default: ''
+  Parameter12Type:
+    Description: 'Type of the twelfth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter12Value:
+    Description: 'Value of the twelfth parameter'
+    Type: String
+    Default: ''
+  Parameter13Name:
+    Description: 'Name of the thirteenth parameter'
+    Type: String
+    Default: ''
+  Parameter13Type:
+    Description: 'Type of the thirteenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter13Value:
+    Description: 'Value of the thirteenth parameter'
+    Type: String
+    Default: ''
+  Parameter14Name:
+    Description: 'Name of the fourteenth parameter'
+    Type: String
+    Default: ''
+  Parameter14Type:
+    Description: 'Type of the fourteenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter14Value:
+    Description: 'Value of the fourteenth parameter'
+    Type: String
+    Default: ''
+  Parameter15Name:
+    Description: 'Name of the fifteenth parameter'
+    Type: String
+    Default: ''
+  Parameter15Type:
+    Description: 'Type of the fifteenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter15Value:
+    Description: 'Value of the fifteenth parameter'
+    Type: String
+    Default: ''
+  Parameter16Name:
+    Description: 'Name of the sixteenth parameter'
+    Type: String
+    Default: ''
+  Parameter16Type:
+    Description: 'Type of the sixteenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter16Value:
+    Description: 'Value of the sixteenth parameter'
+    Type: String
+    Default: ''
+  Parameter17Name:
+    Description: 'Name of the seventeenth parameter'
+    Type: String
+    Default: ''
+  Parameter17Type:
+    Description: 'Type of the seventeenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter17Value:
+    Description: 'Value of the seventeenth parameter'
+    Type: String
+    Default: ''
+  Parameter18Name:
+    Description: 'Name of the eighteenth parameter'
+    Type: String
+    Default: ''
+  Parameter18Type:
+    Description: 'Type of the eighteenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter18Value:
+    Description: 'Value of the eighteenth parameter'
+    Type: String
+    Default: ''
+  Parameter19Name:
+    Description: 'Name of the nineteenth parameter'
+    Type: String
+    Default: ''
+  Parameter19Type:
+    Description: 'Type of the nineteenth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter19Value:
+    Description: 'Value of the nineteenth parameter'
+    Type: String
+    Default: ''
+  Parameter20Name:
+    Description: 'Name of the twentieth parameter'
+    Type: String
+    Default: ''
+  Parameter20Type:
+    Description: 'Type of the twentieth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter20Value:
+    Description: 'Value of the twentieth parameter'
+    Type: String
+    Default: ''
+  Parameter21Name:
+    Description: 'Name of the twenty-first parameter'
+    Type: String
+    Default: ''
+  Parameter21Type:
+    Description: 'Type of the twenty-first parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter21Value:
+    Description: 'Value of the twenty-first parameter'
+    Type: String
+    Default: ''
+  Parameter22Name:
+    Description: 'Name of the twenty-second parameter'
+    Type: String
+    Default: ''
+  Parameter22Type:
+    Description: 'Type of the twenty-second parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter22Value:
+    Description: 'Value of the twenty-second parameter'
+    Type: String
+    Default: ''
+  Parameter23Name:
+    Description: 'Name of the twenty-third parameter'
+    Type: String
+    Default: ''
+  Parameter23Type:
+    Description: 'Type of the twenty-third parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter23Value:
+    Description: 'Value of the twenty-third parameter'
+    Type: String
+    Default: ''
+  Parameter24Name:
+    Description: 'Name of the twenty-fourth parameter'
+    Type: String
+    Default: ''
+  Parameter24Type:
+    Description: 'Type of the twenty-fourth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter24Value:
+    Description: 'Value of the twenty-fourth parameter'
+    Type: String
+    Default: ''
+  Parameter25Name:
+    Description: 'Name of the twenty-fifth parameter'
+    Type: String
+    Default: ''
+  Parameter25Type:
+    Description: 'Type of the twenty-fifth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter25Value:
+    Description: 'Value of the twenty-fifth parameter'
+    Type: String
+    Default: ''
+  Parameter26Name:
+    Description: 'Name of the twenty-sixth parameter'
+    Type: String
+    Default: ''
+  Parameter26Type:
+    Description: 'Type of the twenty-sixth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter26Value:
+    Description: 'Value of the twenty-sixth parameter'
+    Type: String
+    Default: ''
+  Parameter27Name:
+    Description: 'Name of the twenty-seventh parameter'
+    Type: String
+    Default: ''
+  Parameter27Type:
+    Description: 'Type of the twenty-seventh parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter27Value:
+    Description: 'Value of the twenty-seventh parameter'
+    Type: String
+    Default: ''
+  Parameter28Name:
+    Description: 'Name of the twenty-eighth parameter'
+    Type: String
+    Default: ''
+  Parameter28Type:
+    Description: 'Type of the twenty-eighth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter28Value:
+    Description: 'Value of the twenty-eighth parameter'
+    Type: String
+    Default: ''
+  Parameter29Name:
+    Description: 'Name of the twenty-ninth parameter'
+    Type: String
+    Default: ''
+  Parameter29Type:
+    Description: 'Type of the twenty-ninth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter29Value:
+    Description: 'Value of the twenty-ninth parameter'
+    Type: String
+    Default: ''
+  Parameter30Name:
+    Description: 'Name of the thirtieth parameter'
+    Type: String
+    Default: ''
+  Parameter30Type:
+    Description: 'Type of the thirtieth parameter (String, StringList, SecureString)'
+    Type: String
+    AllowedValues: ['String', 'StringList', 'SecureString']
+    Default: 'String'
+  Parameter30Value:
+    Description: 'Value of the thirtieth parameter'
+    Type: String
+    Default: ''
+Conditions:
+  HasKmsKey: !Not [!Equals [!Ref ParentKmsKeyStack, '']]
+  CreateParameter1: !Not [!Equals [!Ref Parameter1Name, '']]
+  CreateParameter2: !Not [!Equals [!Ref Parameter2Name, '']]
+  CreateParameter3: !Not [!Equals [!Ref Parameter3Name, '']]
+  CreateParameter4: !Not [!Equals [!Ref Parameter4Name, '']]
+  CreateParameter5: !Not [!Equals [!Ref Parameter5Name, '']]
+  CreateParameter6: !Not [!Equals [!Ref Parameter6Name, '']]
+  CreateParameter7: !Not [!Equals [!Ref Parameter7Name, '']]
+  CreateParameter8: !Not [!Equals [!Ref Parameter8Name, '']]
+  CreateParameter9: !Not [!Equals [!Ref Parameter9Name, '']]
+  CreateParameter10: !Not [!Equals [!Ref Parameter10Name, '']]
+  CreateParameter11: !Not [!Equals [!Ref Parameter11Name, '']]
+  CreateParameter12: !Not [!Equals [!Ref Parameter12Name, '']]
+  CreateParameter13: !Not [!Equals [!Ref Parameter13Name, '']]
+  CreateParameter14: !Not [!Equals [!Ref Parameter14Name, '']]
+  CreateParameter15: !Not [!Equals [!Ref Parameter15Name, '']]
+  CreateParameter16: !Not [!Equals [!Ref Parameter16Name, '']]
+  CreateParameter17: !Not [!Equals [!Ref Parameter17Name, '']]
+  CreateParameter18: !Not [!Equals [!Ref Parameter18Name, '']]
+  CreateParameter19: !Not [!Equals [!Ref Parameter19Name, '']]
+  CreateParameter20: !Not [!Equals [!Ref Parameter20Name, '']]
+  CreateParameter21: !Not [!Equals [!Ref Parameter21Name, '']]
+  CreateParameter22: !Not [!Equals [!Ref Parameter22Name, '']]
+  CreateParameter23: !Not [!Equals [!Ref Parameter23Name, '']]
+  CreateParameter24: !Not [!Equals [!Ref Parameter24Name, '']]
+  CreateParameter25: !Not [!Equals [!Ref Parameter25Name, '']]
+  CreateParameter26: !Not [!Equals [!Ref Parameter26Name, '']]
+  CreateParameter27: !Not [!Equals [!Ref Parameter27Name, '']]
+  CreateParameter28: !Not [!Equals [!Ref Parameter28Name, '']]
+  CreateParameter29: !Not [!Equals [!Ref Parameter29Name, '']]
+  CreateParameter30: !Not [!Equals [!Ref Parameter30Name, '']]
+Resources:
+  # Create resources for each SSM parameter if the name is provided
+  Parameter1:
+    Condition: CreateParameter1
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter1Name
+      Type: !Ref Parameter1Type
+      Value: !Ref Parameter1Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter2:
+    Condition: CreateParameter2
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter2Name
+      Type: !Ref Parameter2Type
+      Value: !Ref Parameter2Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter3:
+    Condition: CreateParameter3
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter3Name
+      Type: !Ref Parameter3Type
+      Value: !Ref Parameter3Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter4:
+    Condition: CreateParameter4
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter4Name
+      Type: !Ref Parameter4Type
+      Value: !Ref Parameter4Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter5:
+    Condition: CreateParameter5
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter5Name
+      Type: !Ref Parameter5Type
+      Value: !Ref Parameter5Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter6:
+    Condition: CreateParameter6
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter6Name
+      Type: !Ref Parameter6Type
+      Value: !Ref Parameter6Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter7:
+    Condition: CreateParameter7
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter7Name
+      Type: !Ref Parameter7Type
+      Value: !Ref Parameter7Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter8:
+    Condition: CreateParameter8
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter8Name
+      Type: !Ref Parameter8Type
+      Value: !Ref Parameter8Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter9:
+    Condition: CreateParameter9
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter9Name
+      Type: !Ref Parameter9Type
+      Value: !Ref Parameter9Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter10:
+    Condition: CreateParameter10
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter10Name
+      Type: !Ref Parameter10Type
+      Value: !Ref Parameter10Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter11:
+    Condition: CreateParameter11
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter11Name
+      Type: !Ref Parameter11Type
+      Value: !Ref Parameter11Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter12:
+    Condition: CreateParameter12
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter12Name
+      Type: !Ref Parameter12Type
+      Value: !Ref Parameter12Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter13:
+    Condition: CreateParameter13
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter13Name
+      Type: !Ref Parameter13Type
+      Value: !Ref Parameter13Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter14:
+    Condition: CreateParameter14
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter14Name
+      Type: !Ref Parameter14Type
+      Value: !Ref Parameter14Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter15:
+    Condition: CreateParameter15
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter15Name
+      Type: !Ref Parameter15Type
+      Value: !Ref Parameter15Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter16:
+    Condition: CreateParameter16
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter16Name
+      Type: !Ref Parameter16Type
+      Value: !Ref Parameter16Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter17:
+    Condition: CreateParameter17
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter17Name
+      Type: !Ref Parameter17Type
+      Value: !Ref Parameter17Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter18:
+    Condition: CreateParameter18
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter18Name
+      Type: !Ref Parameter18Type
+      Value: !Ref Parameter18Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter19:
+    Condition: CreateParameter19
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter19Name
+      Type: !Ref Parameter19Type
+      Value: !Ref Parameter19Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter20:
+    Condition: CreateParameter20
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter20Name
+      Type: !Ref Parameter20Type
+      Value: !Ref Parameter20Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter21:
+    Condition: CreateParameter21
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter21Name
+      Type: !Ref Parameter21Type
+      Value: !Ref Parameter21Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter22:
+    Condition: CreateParameter22
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter22Name
+      Type: !Ref Parameter22Type
+      Value: !Ref Parameter22Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter23:
+    Condition: CreateParameter23
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter23Name
+      Type: !Ref Parameter23Type
+      Value: !Ref Parameter23Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter24:
+    Condition: CreateParameter24
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter24Name
+      Type: !Ref Parameter24Type
+      Value: !Ref Parameter24Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter25:
+    Condition: CreateParameter25
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter25Name
+      Type: !Ref Parameter25Type
+      Value: !Ref Parameter25Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter26:
+    Condition: CreateParameter26
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter26Name
+      Type: !Ref Parameter26Type
+      Value: !Ref Parameter26Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter27:
+    Condition: CreateParameter27
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter27Name
+      Type: !Ref Parameter27Type
+      Value: !Ref Parameter27Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter28:
+    Condition: CreateParameter28
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter28Name
+      Type: !Ref Parameter28Type
+      Value: !Ref Parameter28Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter29:
+    Condition: CreateParameter29
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter29Name
+      Type: !Ref Parameter29Type
+      Value: !Ref Parameter29Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+  Parameter30:
+    Condition: CreateParameter30
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: !Ref Parameter30Name
+      Type: !Ref Parameter30Type
+      Value: !Ref Parameter30Value
+      KeyId: !If [HasKmsKey, {'Fn::ImportValue': !Sub '${ParentKmsKeyStack}-KeyId'}, !Ref 'AWS::NoValue']
+Outputs:
+  Parameter1Output:
+    Condition: CreateParameter1
+    Description: "The name of the first parameter"
+    Value: !Ref Parameter1Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter1Name"
+  Parameter2Output:
+    Condition: CreateParameter2
+    Description: "The name of the second parameter"
+    Value: !Ref Parameter2Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter2Name"
+  Parameter3Output:
+    Condition: CreateParameter3
+    Description: "The name of the third parameter"
+    Value: !Ref Parameter3Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter3Name"
+  Parameter4Output:
+    Condition: CreateParameter4
+    Description: "The name of the fourth parameter"
+    Value: !Ref Parameter4Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter4Name"
+  Parameter5Output:
+    Condition: CreateParameter5
+    Description: "The name of the fifth parameter"
+    Value: !Ref Parameter5Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter5Name"
+  Parameter6Output:
+    Condition: CreateParameter6
+    Description: "The name of the sixth parameter"
+    Value: !Ref Parameter6Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter6Name"
+  Parameter7Output:
+    Condition: CreateParameter7
+    Description: "The name of the seventh parameter"
+    Value: !Ref Parameter7Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter7Name"
+  Parameter8Output:
+    Condition: CreateParameter8
+    Description: "The name of the eighth parameter"
+    Value: !Ref Parameter8Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter8Name"
+  Parameter9Output:
+    Condition: CreateParameter9
+    Description: "The name of the ninth parameter"
+    Value: !Ref Parameter9Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter9Name"
+  Parameter10Output:
+    Condition: CreateParameter10
+    Description: "The name of the tenth parameter"
+    Value: !Ref Parameter10Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter10Name"
+  Parameter11Output:
+    Condition: CreateParameter11
+    Description: "The name of the eleventh parameter"
+    Value: !Ref Parameter11Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter11Name"
+  Parameter12Output:
+    Condition: CreateParameter12
+    Description: "The name of the twelfth parameter"
+    Value: !Ref Parameter12Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter12Name"
+  Parameter13Output:
+    Condition: CreateParameter13
+    Description: "The name of the thirteenth parameter"
+    Value: !Ref Parameter13Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter13Name"
+  Parameter14Output:
+    Condition: CreateParameter14
+    Description: "The name of the fourteenth parameter"
+    Value: !Ref Parameter14Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter14Name"
+  Parameter15Output:
+    Condition: CreateParameter15
+    Description: "The name of the fifteenth parameter"
+    Value: !Ref Parameter15Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter15Name"
+  Parameter16Output:
+    Condition: CreateParameter16
+    Description: "The name of the sixteenth parameter"
+    Value: !Ref Parameter16Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter16Name"
+  Parameter17Output:
+    Condition: CreateParameter17
+    Description: "The name of the seventeenth parameter"
+    Value: !Ref Parameter17Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter17Name"
+  Parameter18Output:
+    Condition: CreateParameter18
+    Description: "The name of the eighteenth parameter"
+    Value: !Ref Parameter18Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter18Name"
+  Parameter19Output:
+    Condition: CreateParameter19
+    Description: "The name of the nineteenth parameter"
+    Value: !Ref Parameter19Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter19Name"
+  Parameter20Output:
+    Condition: CreateParameter20
+    Description: "The name of the twentieth parameter"
+    Value: !Ref Parameter20Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter20Name"
+  Parameter21Output:
+    Condition: CreateParameter21
+    Description: "The name of the twenty-first parameter"
+    Value: !Ref Parameter21Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter21Name"
+  Parameter22Output:
+    Condition: CreateParameter22
+    Description: "The name of the twenty-second parameter"
+    Value: !Ref Parameter22Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter22Name"
+  Parameter23Output:
+    Condition: CreateParameter23
+    Description: "The name of the twenty-third parameter" 
+    Value: !Ref Parameter23Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter23Name"
+  Parameter24Output:
+    Condition: CreateParameter24
+    Description: "The name of the twenty-fourth parameter"
+    Value: !Ref Parameter24Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter24Name"
+  Parameter25Output:
+    Condition: CreateParameter25
+    Description: "The name of the twenty-fifth parameter"
+    Value: !Ref Parameter25Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter25Name"
+  Parameter26Output:
+    Condition: CreateParameter26
+    Description: "The name of the twenty-sixth parameter"
+    Value: !Ref Parameter26Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter26Name"
+  Parameter27Output:
+    Condition: CreateParameter27
+    Description: "The name of the twenty-seventh parameter"
+    Value: !Ref Parameter27Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter27Name"
+  Parameter28Output:
+    Condition: CreateParameter28
+    Description: "The name of the twenty-eighth parameter"
+    Value: !Ref Parameter28Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter28Name"
+  Parameter29Output:
+    Condition: CreateParameter29
+    Description: "The name of the twenty-ninth parameter"
+    Value: !Ref Parameter29Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter29Name"
+  Parameter30Output:
+    Condition: CreateParameter30
+    Description: "The name of the thirtieth parameter"
+    Value: !Ref Parameter30Name
+    Export:
+      Name: !Sub "${AWS::StackName}-Parameter30Name"
