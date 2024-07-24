@@ -400,7 +400,7 @@ Resources:
         RoutingPolicy: MULTIVALUE
       HealthCheckCustomConfig:
         FailureThreshold: 1
-      Name: !Sub '${AWS::StackName}'
+      Name: !Ref Name
       NamespaceId: {'Fn::ImportValue': !Sub '${ParentCloudMapStack}-NamespaceID'}
   TaskExecutionRole:
     Type: 'AWS::IAM::Role'

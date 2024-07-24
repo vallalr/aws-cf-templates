@@ -84,6 +84,12 @@ jobs:
           find: "widdix/hello:v1"
           replace: "nginx:latest"
 
+      - name: httpcode
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "200-299"
+          replace: "200-499"
+
       - name: domain
         uses: jacobtomlinson/gha-find-replace@master
         with:
