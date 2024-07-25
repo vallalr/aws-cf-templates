@@ -38,6 +38,7 @@ Metadata:
       - AllowedCountryCodes
       - TrustedIPAddresses
       - BlockedIPAddresses
+      - LogsRetentionInDays
 Parameters:
   Scope:
     Description: 'Specify whether WAF shall be used with CloudFront (us-east-1 only!) or regional (ALB, API Gateway, and AppSync).'
@@ -143,6 +144,11 @@ Parameters:
     Description: 'Comma-separated list of IP addresses or CIDR ranges to block (e.g., 192.168.1.1/32, 10.0.0.0/8)'
     Type: CommaDelimitedList
     Default: ''
+  LogsRetentionInDays:
+    Description: 'Specifies the number of days you want to retain log events in the specified log group.'
+    Type: Number
+    Default: 14
+    AllowedValues: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
 Conditions:
   EnableRateLimit: !Not [!Equals [!Ref RateLimitEffect, 'Disable']]
   BlockRateLimit: !Equals [!Ref RateLimitEffect, 'Block']
@@ -396,6 +402,17 @@ Resources:
         CloudWatchMetricsEnabled: true
         MetricName: !Ref 'AWS::StackName'
         SampledRequestsEnabled: true
+  LogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties:
+      LogGroupName: !Sub '${AWS::StackName}-LogGroup'
+      RetentionInDays: !Ref LogsRetentionInDays
+  WAFLoggingConfiguration:
+    Type: AWS::WAFv2::LoggingConfiguration
+    Properties:
+      ResourceArn: !GetAtt WebACL.Arn
+      LogDestinationConfigs:
+        - !GetAtt 'LogGroup.Arn'
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
