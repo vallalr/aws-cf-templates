@@ -176,7 +176,7 @@ Resources:
     Condition: HasTrustedIPAddresses
     Type: AWS::WAFv2::IPSet
     Properties:
-      Name: TrustedIPAddresses
+      Name: !Sub 'TrustedIPAddresses-${AWS::StackName}'
       Addresses: !Ref TrustedIPAddresses
       IPAddressVersion: IPV4
       Scope: REGIONAL
@@ -185,7 +185,7 @@ Resources:
     Condition: HasBlockedIPAddresses
     Type: AWS::WAFv2::IPSet
     Properties:
-      Name: BlockedIPAddresses
+      Name: !Sub 'BlockedIPAddresses-${AWS::StackName}'
       Addresses: !Ref BlockedIPAddresses
       IPAddressVersion: IPV4
       Scope: REGIONAL
@@ -405,14 +405,14 @@ Resources:
   LogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
-      LogGroupName: !Sub '${AWS::StackName}-LogGroup'
+      LogGroupName: !Sub 'aws-waf-logs-${AWS::StackName}'
       RetentionInDays: !Ref LogsRetentionInDays
-  WAFLoggingConfiguration:
+  LoggingConfiguration:
     Type: AWS::WAFv2::LoggingConfiguration
     Properties:
       ResourceArn: !GetAtt WebACL.Arn
       LogDestinationConfigs:
-        - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${AWS::StackName}-LogGroup:*'
+        - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:aws-waf-logs-${AWS::StackName}'
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
