@@ -33,13 +33,14 @@ Metadata:
       - BotControlExcludeRule4
       - BotControlExcludeRule5
       - CustomRuleEffect
+      - AllowCloudFrontRequests
       - GeoLocationRestrictionEffect
       - AllowedCountryCodes
       - TrustedIPAddresses
       - BlockedIPAddresses
 Parameters:
   Scope:
-    Description: 'Specify wether WAF shall be used with CloudFront (us-east-1 only!) or regional (ALB, API Gateway, and AppSync).'
+    Description: 'Specify whether WAF shall be used with CloudFront (us-east-1 only!) or regional (ALB, API Gateway, and AppSync).'
     Type: String
     Default: 'REGIONAL'
     AllowedValues:
@@ -52,7 +53,7 @@ Parameters:
     MinValue: 100
     MaxValue: 20000000
   RateLimitEffect:
-    Description: 'Block or count requests that exceed the rate limit. Alterantively, disable rate limiting at all.'
+    Description: 'Block or count requests that exceed the rate limit. Alternatively, disable rate limiting at all.'
     Type: String
     Default: 'Block'
     AllowedValues:
@@ -60,7 +61,7 @@ Parameters:
     - 'Block'
     - 'Count'
   ReputationListEffect:
-    Description: 'Block or count requests with bad reputation. Alterantively, disable reputation list at all.'
+    Description: 'Block or count requests with bad reputation. Alternatively, disable reputation list at all.'
     Type: String
     Default: 'Disable'
     AllowedValues:
@@ -80,7 +81,7 @@ Parameters:
     Type: String
     Default: ''
   BotControlEffect:
-    Description: 'Block or count requests from bots. Alterantively, disable bot control at all.'
+    Description: 'Block or count requests from bots. Alternatively, disable bot control at all.'
     Type: String
     Default: 'Disable'
     AllowedValues:
@@ -115,6 +116,13 @@ Parameters:
     - 'Disable'
     - 'Block'
     - 'Count'
+  AllowCloudFrontRequests:
+    Description: 'Enable or disable allowing requests from CloudFront.'
+    Type: String
+    Default: 'Disable'
+    AllowedValues:
+      - 'Disable'
+      - 'Enable'
   GeoLocationRestrictionEffect:
     Type: String
     Description: 'Action to take for requests not from allowed countries'
@@ -152,6 +160,7 @@ Conditions:
   HasBotControlExcludeRule5: !Not [!Equals [!Ref BotControlExcludeRule5, '']]
   EnableCustomRule: !Not [!Equals [!Ref CustomRuleEffect, 'Disable']]
   BlockCustomRule: !Equals [!Ref CustomRuleEffect, 'Block']
+  EnableAllowCloudFrontRequests: !Equals [!Ref AllowCloudFrontRequests, 'Enable']
   EnableGeoLocationRestriction: !Not [!Equals [!Ref GeoLocationRestrictionEffect, 'Disable']]
   BlockGeoLocationRestriction: !Equals [!Ref GeoLocationRestrictionEffect, 'Block']
   HasTrustedIPAddresses: !Not [!Equals [!Join ['', !Ref TrustedIPAddresses], '']]
@@ -210,6 +219,27 @@ Resources:
           Statement:
             IPSetReferenceStatement:
               ARN: !GetAtt BlockedIPSet.Arn
+        - !Ref 'AWS::NoValue'
+      - !If
+        - EnableAllowCloudFrontRequests
+        - Name: AllowCloudFrontRequests
+          Priority: 10
+          Action:
+            Allow: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AllowCloudFrontRequests
+          Statement:
+            ByteMatchStatement:
+              SearchString: Amazon CloudFront
+              FieldToMatch:
+                SingleHeader:
+                  Name: user-agent
+              TextTransformations:
+                - Priority: 0
+                  Type: NONE
+              PositionalConstraint: EXACTLY
         - !Ref 'AWS::NoValue'
       - !If
         - EnableGeoLocationRestriction
