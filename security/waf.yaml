@@ -412,7 +412,7 @@ Resources:
     Properties:
       ResourceArn: !GetAtt WebACL.Arn
       LogDestinationConfigs:
-        - !GetAtt 'LogGroup.Arn'
+        - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${AWS::StackName}-LogGroup'
 Outputs:
   TemplateID:
     Description: 'cloudonaut.io template id.'
