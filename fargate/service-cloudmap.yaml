@@ -33,6 +33,7 @@ Metadata:
         default: 'Task Parameters'
       Parameters:
       - TaskPolicies
+      - ProxyContainerName
       - ProxyImage
       - ProxyCommand
       - ProxyPort
@@ -42,6 +43,7 @@ Metadata:
       - ProxyEnvironment2Value
       - ProxyEnvironment3Key
       - ProxyEnvironment3Value
+      - AppContainerName
       - AppImage
       - AppCommand
       - AppPort
@@ -51,6 +53,61 @@ Metadata:
       - AppEnvironment2Value
       - AppEnvironment3Key
       - AppEnvironment3Value
+      - AppEnvironment4Key
+      - AppEnvironment4Value
+      - AppEnvironment5Key
+      - AppEnvironment5Value
+      - AppEnvironment6Key
+      - AppEnvironment6Value
+      - AppEnvironment7Key
+      - AppEnvironment7Value
+      - AppEnvironment8Key
+      - AppEnvironment8Value
+      - AppEnvironment9Key
+      - AppEnvironment9Value
+      - AppEnvironment10Key
+      - AppEnvironment10Value
+      - AppEnvironment11Key
+      - AppEnvironment11Value
+      - AppEnvironment12Key
+      - AppEnvironment12Value
+      - AppEnvironment13Key
+      - AppEnvironment13Value
+      - AppEnvironment14Key
+      - AppEnvironment14Value
+      - AppEnvironment15Key
+      - AppEnvironment15Value
+      - AppEnvironment16Key
+      - AppEnvironment16Value
+      - AppEnvironment17Key
+      - AppEnvironment17Value
+      - AppEnvironment18Key
+      - AppEnvironment18Value
+      - AppEnvironment19Key
+      - AppEnvironment19Value
+      - AppEnvironment20Key
+      - AppEnvironment20Value
+      - AppEnvironment21Key
+      - AppEnvironment21Value
+      - AppEnvironment22Key
+      - AppEnvironment22Value
+      - AppEnvironment23Key
+      - AppEnvironment23Value
+      - AppEnvironment24Key
+      - AppEnvironment24Value
+      - AppEnvironment25Key
+      - AppEnvironment25Value
+      - AppEnvironment26Key
+      - AppEnvironment26Value
+      - AppEnvironment27Key
+      - AppEnvironment27Value
+      - AppEnvironment28Key
+      - AppEnvironment28Value
+      - AppEnvironment29Key
+      - AppEnvironment29Value
+      - AppEnvironment30Key
+      - AppEnvironment30Value
+      - SidecarContainerName
       - SidecarImage
       - SidecarCommand
       - SidecarPort
@@ -60,6 +117,20 @@ Metadata:
       - SidecarEnvironment2Value
       - SidecarEnvironment3Key
       - SidecarEnvironment3Value
+      - SidecarEnvironment4Key
+      - SidecarEnvironment4Value
+      - SidecarEnvironment5Key
+      - SidecarEnvironment5Value
+      - SidecarEnvironment6Key
+      - SidecarEnvironment6Value
+      - SidecarEnvironment7Key
+      - SidecarEnvironment7Value
+      - SidecarEnvironment8Key
+      - SidecarEnvironment8Value
+      - SidecarEnvironment9Key
+      - SidecarEnvironment9Value
+      - SidecarEnvironment10Key
+      - SidecarEnvironment10Value
     - Label:
         default: 'Service Parameters'
       Parameters:
@@ -118,6 +189,10 @@ Parameters:
     Description: 'Comma-delimited list of IAM managed policy ARNs to attach to the task IAM role'
     Type: String
     Default: ''
+  ProxyContainerName:
+    Description: 'The name of the proxy container.'
+    Type: String
+    Default: 'proxy'
   ProxyImage:
     Description: 'Optional Docker image to use for the proxy container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
@@ -156,6 +231,10 @@ Parameters:
     Description: 'Optional environment variable 3 value for proxy container.'
     Type: String
     Default: ''
+  AppContainerName:
+    Description: 'The name of the app container.'
+    Type: String
+    Default: 'app'
   AppImage:
     Description: 'The Docker image to use for the app container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
@@ -194,6 +273,226 @@ Parameters:
     Description: 'Optional environment variable 3 value for app container.'
     Type: String
     Default: ''
+  AppEnvironment4Key:
+    Description: 'Optional environment variable 4 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment4Value:
+    Description: 'Optional environment variable 4 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment5Key:
+    Description: 'Optional environment variable 5 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment5Value:
+    Description: 'Optional environment variable 5 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment6Key:
+    Description: 'Optional environment variable 6 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment6Value:
+    Description: 'Optional environment variable 6 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment7Key:
+    Description: 'Optional environment variable 7 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment7Value:
+    Description: 'Optional environment variable 7 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment8Key:
+    Description: 'Optional environment variable 8 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment8Value:
+    Description: 'Optional environment variable 8 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment9Key:
+    Description: 'Optional environment variable 9 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment9Value:
+    Description: 'Optional environment variable 9 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment10Key:
+    Description: 'Optional environment variable 10 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment10Value:
+    Description: 'Optional environment variable 10 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment11Key:
+    Description: 'Optional environment variable 11 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment11Value:
+    Description: 'Optional environment variable 11 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment12Key:
+    Description: 'Optional environment variable 12 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment12Value:
+    Description: 'Optional environment variable 12 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment13Key:
+    Description: 'Optional environment variable 13 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment13Value:
+    Description: 'Optional environment variable 13 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment14Key:
+    Description: 'Optional environment variable 14 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment14Value:
+    Description: 'Optional environment variable 14 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment15Key:
+    Description: 'Optional environment variable 15 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment15Value:
+    Description: 'Optional environment variable 15 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment16Key:
+    Description: 'Optional environment variable 16 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment16Value:
+    Description: 'Optional environment variable 16 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment17Key:
+    Description: 'Optional environment variable 17 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment17Value:
+    Description: 'Optional environment variable 17 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment18Key:
+    Description: 'Optional environment variable 18 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment18Value:
+    Description: 'Optional environment variable 18 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment19Key:
+    Description: 'Optional environment variable 19 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment19Value:
+    Description: 'Optional environment variable 19 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment20Key:
+    Description: 'Optional environment variable 20 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment20Value:
+    Description: 'Optional environment variable 20 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment21Key:
+    Description: 'Optional environment variable 21 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment21Value:
+    Description: 'Optional environment variable 21 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment22Key:
+    Description: 'Optional environment variable 22 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment22Value:
+    Description: 'Optional environment variable 22 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment23Key:
+    Description: 'Optional environment variable 23 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment23Value:
+    Description: 'Optional environment variable 23 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment24Key:
+    Description: 'Optional environment variable 24 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment24Value:
+    Description: 'Optional environment variable 24 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment25Key:
+    Description: 'Optional environment variable 25 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment25Value:
+    Description: 'Optional environment variable 25 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment26Key:
+    Description: 'Optional environment variable 26 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment26Value:
+    Description: 'Optional environment variable 26 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment27Key:
+    Description: 'Optional environment variable 27 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment27Value:
+    Description: 'Optional environment variable 27 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment28Key:
+    Description: 'Optional environment variable 28 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment28Value:
+    Description: 'Optional environment variable 28 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment29Key:
+    Description: 'Optional environment variable 29 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment29Value:
+    Description: 'Optional environment variable 29 value for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment30Key:
+    Description: 'Optional environment variable 30 key for app container.'
+    Type: String
+    Default: ''
+  AppEnvironment30Value:
+    Description: 'Optional environment variable 30 value for app container.'
+    Type: String
+    Default: ''
+  SidecarContainerName:
+    Description: 'The name of the sidecar container.'
+    Type: String
+    Default: 'sidecar'
   SidecarImage:
     Description: 'Optional Docker image to use for the sidecar container. You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag).'
     Type: String
@@ -232,14 +531,67 @@ Parameters:
     Description: 'Optional environment variable 3 value for sidecar container.'
     Type: String
     Default: ''
-  Name:
-    Description: 'The name of the service used for service discovery (Cloud Map).'
+  SidecarEnvironment4Key:
+    Description: 'Optional environment variable 4 key for sidecar container.'
     Type: String
+    Default: ''
+  SidecarEnvironment4Value:
+    Description: 'Optional environment variable 4 value for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment5Key:
+    Description: 'Optional environment variable 5 key for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment5Value:
+    Description: 'Optional environment variable 5 value for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment6Key:
+    Description: 'Optional environment variable 6 key for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment6Value:
+    Description: 'Optional environment variable 6 value for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment7Key:
+    Description: 'Optional environment variable 7 key for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment7Value:
+    Description: 'Optional environment variable 7 value for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment8Key:
+    Description: 'Optional environment variable 8 key for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment8Value:
+    Description: 'Optional environment variable 8 value for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment9Key:
+    Description: 'Optional environment variable 9 key for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment9Value:
+    Description: 'Optional environment variable 9 value for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment10Key:
+    Description: 'Optional environment variable 10 key for sidecar container.'
+    Type: String
+    Default: ''
+  SidecarEnvironment10Value:
+    Description: 'Optional environment variable 10 value for sidecar container.'
+    Type: String
+    Default: ''
   Cpu:
     Description: 'The minimum number of vCPUs to reserve for the container.'
     Type: String
     Default: '0.25'
-    AllowedValues: ['0.25', '0.5', '1', '2', '4']
+    AllowedValues: ['0.25', '0.5', '1', '2', '4', '8', '16']
   Memory:
     Description: 'The amount (in GB) of memory used by the task.'
     Type: String
@@ -297,6 +649,10 @@ Mappings:
       Cpu: 2048
     '4':
       Cpu: 4096
+    '8':
+      Cpu: 8192
+    '16':
+      Cpu: 16384
   MemoryMap:
     '0.5':
       Memory: 512
@@ -374,6 +730,33 @@ Conditions:
   HasAppEnvironment1Key: !Not [!Equals [!Ref AppEnvironment1Key, '']]
   HasAppEnvironment2Key: !Not [!Equals [!Ref AppEnvironment2Key, '']]
   HasAppEnvironment3Key: !Not [!Equals [!Ref AppEnvironment3Key, '']]
+  HasAppEnvironment4Key: !Not [!Equals [!Ref AppEnvironment4Key, '']]
+  HasAppEnvironment5Key: !Not [!Equals [!Ref AppEnvironment5Key, '']]
+  HasAppEnvironment6Key: !Not [!Equals [!Ref AppEnvironment6Key, '']]
+  HasAppEnvironment7Key: !Not [!Equals [!Ref AppEnvironment7Key, '']]
+  HasAppEnvironment8Key: !Not [!Equals [!Ref AppEnvironment8Key, '']]
+  HasAppEnvironment9Key: !Not [!Equals [!Ref AppEnvironment9Key, '']]
+  HasAppEnvironment10Key: !Not [!Equals [!Ref AppEnvironment10Key, '']]
+  HasAppEnvironment11Key: !Not [!Equals [!Ref AppEnvironment11Key, '']]
+  HasAppEnvironment12Key: !Not [!Equals [!Ref AppEnvironment12Key, '']]
+  HasAppEnvironment13Key: !Not [!Equals [!Ref AppEnvironment13Key, '']]
+  HasAppEnvironment14Key: !Not [!Equals [!Ref AppEnvironment14Key, '']]
+  HasAppEnvironment15Key: !Not [!Equals [!Ref AppEnvironment15Key, '']]
+  HasAppEnvironment16Key: !Not [!Equals [!Ref AppEnvironment16Key, '']]
+  HasAppEnvironment17Key: !Not [!Equals [!Ref AppEnvironment17Key, '']]
+  HasAppEnvironment18Key: !Not [!Equals [!Ref AppEnvironment18Key, '']]
+  HasAppEnvironment19Key: !Not [!Equals [!Ref AppEnvironment19Key, '']]
+  HasAppEnvironment20Key: !Not [!Equals [!Ref AppEnvironment20Key, '']]
+  HasAppEnvironment21Key: !Not [!Equals [!Ref AppEnvironment21Key, '']]
+  HasAppEnvironment22Key: !Not [!Equals [!Ref AppEnvironment22Key, '']]
+  HasAppEnvironment23Key: !Not [!Equals [!Ref AppEnvironment23Key, '']]
+  HasAppEnvironment24Key: !Not [!Equals [!Ref AppEnvironment24Key, '']]
+  HasAppEnvironment25Key: !Not [!Equals [!Ref AppEnvironment25Key, '']]
+  HasAppEnvironment26Key: !Not [!Equals [!Ref AppEnvironment26Key, '']]
+  HasAppEnvironment27Key: !Not [!Equals [!Ref AppEnvironment27Key, '']]
+  HasAppEnvironment28Key: !Not [!Equals [!Ref AppEnvironment28Key, '']]
+  HasAppEnvironment29Key: !Not [!Equals [!Ref AppEnvironment29Key, '']]
+  HasAppEnvironment30Key: !Not [!Equals [!Ref AppEnvironment30Key, '']]
   HasProxyImage: !Not [!Equals [!Ref ProxyImage, '']]
   HasProxyCommand: !Not [!Equals [!Ref ProxyCommand, '']]
   HasProxyEnvironment1Key: !Not [!Equals [!Ref ProxyEnvironment1Key, '']]
@@ -384,6 +767,13 @@ Conditions:
   HasSidecarEnvironment1Key: !Not [!Equals [!Ref SidecarEnvironment1Key, '']]
   HasSidecarEnvironment2Key: !Not [!Equals [!Ref SidecarEnvironment2Key, '']]
   HasSidecarEnvironment3Key: !Not [!Equals [!Ref SidecarEnvironment3Key, '']]
+  HasSidecarEnvironment4Key: !Not [!Equals [!Ref SidecarEnvironment4Key, '']]
+  HasSidecarEnvironment5Key: !Not [!Equals [!Ref SidecarEnvironment5Key, '']]
+  HasSidecarEnvironment6Key: !Not [!Equals [!Ref SidecarEnvironment6Key, '']]
+  HasSidecarEnvironment7Key: !Not [!Equals [!Ref SidecarEnvironment7Key, '']]
+  HasSidecarEnvironment8Key: !Not [!Equals [!Ref SidecarEnvironment8Key, '']]
+  HasSidecarEnvironment9Key: !Not [!Equals [!Ref SidecarEnvironment9Key, '']]
+  HasSidecarEnvironment10Key: !Not [!Equals [!Ref SidecarEnvironment10Key, '']]
   HasSpot: !Equals [!Ref Spot, 'true']
 Resources:
   ServiceDiscovery:
@@ -447,7 +837,7 @@ Resources:
       ContainerDefinitions:
       - !If
         - HasProxyImage
-        - Name: proxy
+        - Name: !Ref ProxyContainerName
           Image: !Ref ProxyImage
           Command: !If [HasProxyCommand, !Ref ProxyCommand, !Ref 'AWS::NoValue']
           PortMappings:
@@ -459,13 +849,17 @@ Resources:
             Options:
               'awslogs-region': !Ref 'AWS::Region'
               'awslogs-group': !Ref LogGroup
-              'awslogs-stream-prefix': proxy
+              'awslogs-stream-prefix': !Ref ProxyContainerName
           Environment:
           - !If [HasProxyEnvironment1Key, {Name: !Ref ProxyEnvironment1Key, Value: !Ref ProxyEnvironment1Value}, !Ref 'AWS::NoValue']
           - !If [HasProxyEnvironment2Key, {Name: !Ref ProxyEnvironment2Key, Value: !Ref ProxyEnvironment2Value}, !Ref 'AWS::NoValue']
           - !If [HasProxyEnvironment3Key, {Name: !Ref ProxyEnvironment3Key, Value: !Ref ProxyEnvironment3Value}, !Ref 'AWS::NoValue']
+          Ulimits:
+          - Name: 'nofile'
+            SoftLimit: 1024000
+            HardLimit: 1024000
         - !Ref 'AWS::NoValue'
-      - Name: app
+      - Name: !Ref AppContainerName
         Image: !Ref AppImage
         Command: !If [HasAppCommand, !Split [',', !Ref AppCommand], !Ref 'AWS::NoValue']
         PortMappings:
@@ -477,14 +871,45 @@ Resources:
           Options:
             'awslogs-region': !Ref 'AWS::Region'
             'awslogs-group': !Ref LogGroup
-            'awslogs-stream-prefix': app
+            'awslogs-stream-prefix': !Ref AppContainerName
         Environment:
         - !If [HasAppEnvironment1Key, {Name: !Ref AppEnvironment1Key, Value: !Ref AppEnvironment1Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment2Key, {Name: !Ref AppEnvironment2Key, Value: !Ref AppEnvironment2Value}, !Ref 'AWS::NoValue']
         - !If [HasAppEnvironment3Key, {Name: !Ref AppEnvironment3Key, Value: !Ref AppEnvironment3Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment4Key, {Name: !Ref AppEnvironment4Key, Value: !Ref AppEnvironment4Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment5Key, {Name: !Ref AppEnvironment5Key, Value: !Ref AppEnvironment5Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment6Key, {Name: !Ref AppEnvironment6Key, Value: !Ref AppEnvironment6Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment7Key, {Name: !Ref AppEnvironment7Key, Value: !Ref AppEnvironment7Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment8Key, {Name: !Ref AppEnvironment8Key, Value: !Ref AppEnvironment8Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment9Key, {Name: !Ref AppEnvironment9Key, Value: !Ref AppEnvironment9Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment10Key, {Name: !Ref AppEnvironment10Key, Value: !Ref AppEnvironment10Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment11Key, {Name: !Ref AppEnvironment11Key, Value: !Ref AppEnvironment11Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment12Key, {Name: !Ref AppEnvironment12Key, Value: !Ref AppEnvironment12Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment13Key, {Name: !Ref AppEnvironment13Key, Value: !Ref AppEnvironment13Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment14Key, {Name: !Ref AppEnvironment14Key, Value: !Ref AppEnvironment14Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment15Key, {Name: !Ref AppEnvironment15Key, Value: !Ref AppEnvironment15Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment16Key, {Name: !Ref AppEnvironment16Key, Value: !Ref AppEnvironment16Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment17Key, {Name: !Ref AppEnvironment17Key, Value: !Ref AppEnvironment17Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment18Key, {Name: !Ref AppEnvironment18Key, Value: !Ref AppEnvironment18Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment19Key, {Name: !Ref AppEnvironment19Key, Value: !Ref AppEnvironment19Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment20Key, {Name: !Ref AppEnvironment20Key, Value: !Ref AppEnvironment20Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment21Key, {Name: !Ref AppEnvironment21Key, Value: !Ref AppEnvironment21Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment22Key, {Name: !Ref AppEnvironment22Key, Value: !Ref AppEnvironment22Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment23Key, {Name: !Ref AppEnvironment23Key, Value: !Ref AppEnvironment23Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment24Key, {Name: !Ref AppEnvironment24Key, Value: !Ref AppEnvironment24Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment25Key, {Name: !Ref AppEnvironment25Key, Value: !Ref AppEnvironment25Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment26Key, {Name: !Ref AppEnvironment26Key, Value: !Ref AppEnvironment26Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment27Key, {Name: !Ref AppEnvironment27Key, Value: !Ref AppEnvironment27Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment28Key, {Name: !Ref AppEnvironment28Key, Value: !Ref AppEnvironment28Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment29Key, {Name: !Ref AppEnvironment29Key, Value: !Ref AppEnvironment29Value}, !Ref 'AWS::NoValue']
+        - !If [HasAppEnvironment30Key, {Name: !Ref AppEnvironment30Key, Value: !Ref AppEnvironment30Value}, !Ref 'AWS::NoValue']
+        Ulimits:
+        - Name: 'nofile'
+          SoftLimit: 1024000
+          HardLimit: 1024000
       - !If
         - HasSidecarImage
-        - Name: sidecar
+        - Name: !Ref SidecarContainerName
           Image: !Ref SidecarImage
           Command: !If [HasSidecarCommand, !Ref SidecarCommand, !Ref 'AWS::NoValue']
           PortMappings:
@@ -496,11 +921,22 @@ Resources:
             Options:
               'awslogs-region': !Ref 'AWS::Region'
               'awslogs-group': !Ref LogGroup
-              'awslogs-stream-prefix': sidecar
+              'awslogs-stream-prefix': !Ref SidecarContainerName
           Environment:
           - !If [HasSidecarEnvironment1Key, {Name: !Ref SidecarEnvironment1Key, Value: !Ref SidecarEnvironment1Value}, !Ref 'AWS::NoValue']
           - !If [HasSidecarEnvironment2Key, {Name: !Ref SidecarEnvironment2Key, Value: !Ref SidecarEnvironment2Value}, !Ref 'AWS::NoValue']
           - !If [HasSidecarEnvironment3Key, {Name: !Ref SidecarEnvironment3Key, Value: !Ref SidecarEnvironment3Value}, !Ref 'AWS::NoValue']
+          - !If [HasSidecarEnvironment4Key, {Name: !Ref SidecarEnvironment4Key, Value: !Ref SidecarEnvironment4Value}, !Ref 'AWS::NoValue']
+          - !If [HasSidecarEnvironment5Key, {Name: !Ref SidecarEnvironment5Key, Value: !Ref SidecarEnvironment5Value}, !Ref 'AWS::NoValue']
+          - !If [HasSidecarEnvironment6Key, {Name: !Ref SidecarEnvironment6Key, Value: !Ref SidecarEnvironment6Value}, !Ref 'AWS::NoValue']
+          - !If [HasSidecarEnvironment7Key, {Name: !Ref SidecarEnvironment7Key, Value: !Ref SidecarEnvironment7Value}, !Ref 'AWS::NoValue']
+          - !If [HasSidecarEnvironment8Key, {Name: !Ref SidecarEnvironment8Key, Value: !Ref SidecarEnvironment8Value}, !Ref 'AWS::NoValue']
+          - !If [HasSidecarEnvironment9Key, {Name: !Ref SidecarEnvironment9Key, Value: !Ref SidecarEnvironment9Value}, !Ref 'AWS::NoValue']
+          - !If [HasSidecarEnvironment10Key, {Name: !Ref SidecarEnvironment10Key, Value: !Ref SidecarEnvironment10Value}, !Ref 'AWS::NoValue']
+          Ulimits:
+          - Name: 'nofile'
+            SoftLimit: 1024000
+            HardLimit: 1024000
         - !Ref 'AWS::NoValue'
       Cpu: !FindInMap [CpuMap, !Ref Cpu, Cpu]
       ExecutionRoleArn: !GetAtt 'TaskExecutionRole.Arn'
@@ -551,7 +987,7 @@ Resources:
           Rollback: true
       DesiredCount: !Ref DesiredCount
       ServiceRegistries:
-      - ContainerName: !If [HasProxyImage, proxy, app]
+      - ContainerName: !If [HasProxyImage, !Ref ProxyContainerName, !Ref AppContainerName]
         ContainerPort: !If [HasProxyImage, !Ref ProxyPort, !Ref AppPort]
         RegistryArn: !GetAtt 'ServiceDiscovery.Arn'
       NetworkConfiguration:
@@ -726,3 +1162,8 @@ Outputs:
   StackName:
     Description: 'Stack name.'
     Value: !Sub '${AWS::StackName}'
+  SecurityGroup:
+    Description: 'Use this Security Group to reference incoming traffic from the host/instance.'
+    Value: !Ref ServiceSecurityGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-SecurityGroup'
