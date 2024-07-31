@@ -32,8 +32,8 @@ jobs:
       - name: Copy and modify file
         run: |
           cp fargate/service-cloudmap-cluster-alb-secrets.yaml fargate/service-rabbitmq-cloudmap-cluster-alb-secrets.yaml
-          sed -i '' 's|fargate/service-cloudmap-cluster-alb-secrets|fargate/service-rabbitmq-cloudmap-cluster-alb-secrets|g' fargate/service-rabbitmq-cloudmap-cluster-alb-secrets.yaml
-          sed -i '' '/PortMappings:/a \
+          sed -i 's|fargate/service-cloudmap-cluster-alb-secrets|fargate/service-rabbitmq-cloudmap-cluster-alb-secrets|g' fargate/service-rabbitmq-cloudmap-cluster-alb-secrets.yaml
+          sed -i '/PortMappings:/a \
             - ContainerPort: 5672\
             - ContainerPort: 4369\
             - ContainerPort: 25672' fargate/service-rabbitmq-cloudmap-cluster-alb-secrets.yaml
