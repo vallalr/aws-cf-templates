@@ -35,11 +35,11 @@ jobs:
           sed -i 's|fargate/service-cloudmap-cluster-alb-secrets|fargate/service-rabbitmq-cloudmap-cluster-alb-secrets|g' fargate/service-rabbitmq-cloudmap-cluster-alb-secrets.yaml
           sed -i 's|- ContainerPort: !Ref AppPort|- ContainerPort: !Ref AppPort\n        - ContainerPort: 5672\n        - ContainerPort: 4369\n        - ContainerPort: 25672|' fargate/service-rabbitmq-cloudmap-cluster-alb-secrets.yaml
 
-          - name: locust-master
-          run: |
-            cp fargate/service-cloudmap-cluster-alb-secrets.yaml fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
-            sed -i 's|fargate/service-cloudmap-cluster-alb-secrets|fargate/service-locust-master-cloudmap-cluster-alb-secrets|g' fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
-            sed -i 's|- ContainerPort: !Ref AppPort|- ContainerPort: !Ref AppPort\n        - ContainerPort: 5557|' fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
+      - name: locust-master
+        run: |
+          cp fargate/service-cloudmap-cluster-alb-secrets.yaml fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
+          sed -i 's|fargate/service-cloudmap-cluster-alb-secrets|fargate/service-locust-master-cloudmap-cluster-alb-secrets|g' fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
+          sed -i 's|- ContainerPort: !Ref AppPort|- ContainerPort: !Ref AppPort\n        - ContainerPort: 5557|' fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
   
       - name: company
         uses: jacobtomlinson/gha-find-replace@master
