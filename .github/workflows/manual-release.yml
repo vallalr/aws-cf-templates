@@ -41,6 +41,17 @@ jobs:
           sed -i 's|fargate/service-cloudmap-cluster-alb-secrets|fargate/service-locust-master-cloudmap-cluster-alb-secrets|g' fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
           sed -i 's|- ContainerPort: !Ref AppPort|- ContainerPort: !Ref AppPort\n        - ContainerPort: 5557|' fargate/service-locust-master-cloudmap-cluster-alb-secrets.yaml
   
+      - name: Replace IPv6 settings and create copies
+        run: |
+          find . -type f -name '*.yaml' | while read file; do
+            if grep -q '#AssignIpv6AddressOnCreation: true' "$file" && grep -q 'MapPublicIpOnLaunch: true' "$file"; then
+              new_file="${file%.yaml}-ipv6.yaml"
+              cp "$file" "$new_file"
+              sed -i 's|#AssignIpv6AddressOnCreation: true|AssignIpv6AddressOnCreation: true|g' "$new_file"
+              sed -i 's|MapPublicIpOnLaunch: true|#MapPublicIpOnLaunch: true|g' "$new_file"
+            fi
+          done
+
       - name: company
         uses: jacobtomlinson/gha-find-replace@master
         with:
@@ -116,6 +127,7 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+
       - name: Deploy the files to S3 bucket
         if: ${{ github.event.inputs.environment != 'local' }}
         run: aws s3 sync . s3://${{ env.S3_BUCKET_NAME }} --exclude '.git/*' --exclude '.github/*' --exclude '.gitignore' --exclude '.yamllint' --exclude 'LICENSE' --exclude 'mkdocs.yml' --exclude 'README.md' --exclude '.readthedocs.yaml' --exclude 'setup.py' --exclude 'docs/*' --exclude 'test/*' --exclude '*.js' --exclude '*.md' --delete
