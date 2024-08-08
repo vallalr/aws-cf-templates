@@ -587,6 +587,9 @@ Parameters:
     Description: 'Optional environment variable 10 value for sidecar container.'
     Type: String
     Default: ''
+  Name:
+    Description: 'The name of the service used for service discovery (Cloud Map).'
+    Type: String
   Cpu:
     Description: 'The minimum number of vCPUs to reserve for the container.'
     Type: String
